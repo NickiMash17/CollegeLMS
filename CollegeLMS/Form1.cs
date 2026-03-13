@@ -1,4 +1,23 @@
-﻿using System;
+﻿// ============================================================
+// COPYRIGHT NOTICE
+// ============================================================
+// Project:     College Learner Management System (CollegeLMS)
+// Author:      Nicolette Mashaba
+// Student No:  20232990
+// Module:      KM-03: Database Manipulation and C#
+// Institution: CTU Training Solutions
+// Date:        12 February 2026
+//
+// © 2026 Nicolette Mashaba. All rights reserved.
+// This code is the intellectual property of Nicolette Mashaba.
+// Unauthorized copying, sharing, reuse, or redistribution of
+// this code, in whole or in part, is strictly prohibited
+// without prior written permission from the author.
+//
+// For academic inquiries contact: github.com/NickiMash17
+// ============================================================
+
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
