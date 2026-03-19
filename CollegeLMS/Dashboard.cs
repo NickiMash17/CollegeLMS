@@ -231,6 +231,8 @@ namespace CollegeLMS
         {
             if (btn == null) return;
             cardSpecs[btn] = new CardSpec(icon, title, subtitle);
+            btn.Text = string.Empty;
+            btn.UseCompatibleTextRendering = true;
         }
 
         private void Card_Paint(object sender, PaintEventArgs e)
@@ -239,6 +241,7 @@ namespace CollegeLMS
             if (btn == null || !cardSpecs.ContainsKey(btn)) return;
             CardSpec spec = cardSpecs[btn];
 
+            e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             using (Font iconFont = new Font("Segoe UI Emoji", 18, FontStyle.Regular))
             using (Font titleFont = new Font("Arial", 13, FontStyle.Bold))
@@ -288,7 +291,7 @@ namespace CollegeLMS
         {
             try
             {
-                string localFile = ResolveLocalBackgroundPath("waves-bent-paper-cut-style.jpg");
+                string localFile = ResolveLocalBackgroundPath("6916121.jpg");
                 Image img;
 
                 if (!string.IsNullOrEmpty(localFile) && File.Exists(localFile))
