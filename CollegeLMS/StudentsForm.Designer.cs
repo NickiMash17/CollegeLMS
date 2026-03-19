@@ -19,7 +19,7 @@
 
 namespace CollegeLMS
 {
-    partial class Form1
+    partial class StudentsForm
     {
         private System.ComponentModel.IContainer components = null;
 
@@ -56,11 +56,19 @@ namespace CollegeLMS
             this.lblSearch = new System.Windows.Forms.Label();
             this.lblCount = new System.Windows.Forms.Label();
             this.pnlTitle = new System.Windows.Forms.Panel();
+            this.pnlNav = new System.Windows.Forms.Panel();
+            this.btnNavDashboard = new System.Windows.Forms.Button();
+            this.btnNavStudents = new System.Windows.Forms.Button();
+            this.btnNavCourses = new System.Windows.Forms.Button();
+            this.btnNavDepartments = new System.Windows.Forms.Button();
+            this.btnNavModules = new System.Windows.Forms.Button();
+            this.btnNavLecturers = new System.Windows.Forms.Button();
             this.pnlStatus = new System.Windows.Forms.Panel();
             this.pnlLeft = new System.Windows.Forms.Panel();
             this.statusLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.pnlTitle.SuspendLayout();
+            this.pnlNav.SuspendLayout();
             this.pnlStatus.SuspendLayout();
             this.pnlLeft.SuspendLayout();
             this.SuspendLayout();
@@ -99,6 +107,85 @@ namespace CollegeLMS
             this.lblSubTitle.Size = new System.Drawing.Size(420, 20);
             this.lblSubTitle.Name = "lblSubTitle";
             this.lblSubTitle.BackColor = System.Drawing.Color.Transparent;
+
+            // ── Nav Bar ──
+            this.pnlNav.BackColor = System.Drawing.Color.FromArgb(20, 63, 120);
+            this.pnlNav.Location = new System.Drawing.Point(0, 90);
+            this.pnlNav.Size = new System.Drawing.Size(1150, 36);
+            this.pnlNav.Name = "pnlNav";
+
+            this.btnNavDashboard.Location = new System.Drawing.Point(10, 4);
+            this.btnNavDashboard.Size = new System.Drawing.Size(95, 28);
+            this.btnNavDashboard.Text = "Dashboard";
+            this.btnNavDashboard.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Bold);
+            this.btnNavDashboard.BackColor = System.Drawing.Color.FromArgb(31, 84, 147);
+            this.btnNavDashboard.ForeColor = System.Drawing.Color.White;
+            this.btnNavDashboard.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnNavDashboard.FlatAppearance.BorderSize = 0;
+            this.btnNavDashboard.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnNavDashboard.Click += new System.EventHandler(this.btnNavDashboard_Click);
+
+            this.btnNavStudents.Location = new System.Drawing.Point(110, 4);
+            this.btnNavStudents.Size = new System.Drawing.Size(90, 28);
+            this.btnNavStudents.Text = "Students";
+            this.btnNavStudents.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Bold);
+            this.btnNavStudents.BackColor = System.Drawing.Color.FromArgb(31, 84, 147);
+            this.btnNavStudents.ForeColor = System.Drawing.Color.White;
+            this.btnNavStudents.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnNavStudents.FlatAppearance.BorderSize = 0;
+            this.btnNavStudents.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnNavStudents.Click += new System.EventHandler(this.btnNavStudents_Click);
+
+            this.btnNavCourses.Location = new System.Drawing.Point(205, 4);
+            this.btnNavCourses.Size = new System.Drawing.Size(85, 28);
+            this.btnNavCourses.Text = "Courses";
+            this.btnNavCourses.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Bold);
+            this.btnNavCourses.BackColor = System.Drawing.Color.FromArgb(31, 84, 147);
+            this.btnNavCourses.ForeColor = System.Drawing.Color.White;
+            this.btnNavCourses.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnNavCourses.FlatAppearance.BorderSize = 0;
+            this.btnNavCourses.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnNavCourses.Click += new System.EventHandler(this.btnNavCourses_Click);
+
+            this.btnNavDepartments.Location = new System.Drawing.Point(295, 4);
+            this.btnNavDepartments.Size = new System.Drawing.Size(105, 28);
+            this.btnNavDepartments.Text = "Departments";
+            this.btnNavDepartments.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Bold);
+            this.btnNavDepartments.BackColor = System.Drawing.Color.FromArgb(31, 84, 147);
+            this.btnNavDepartments.ForeColor = System.Drawing.Color.White;
+            this.btnNavDepartments.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnNavDepartments.FlatAppearance.BorderSize = 0;
+            this.btnNavDepartments.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnNavDepartments.Click += new System.EventHandler(this.btnNavDepartments_Click);
+
+            this.btnNavModules.Location = new System.Drawing.Point(405, 4);
+            this.btnNavModules.Size = new System.Drawing.Size(85, 28);
+            this.btnNavModules.Text = "Modules";
+            this.btnNavModules.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Bold);
+            this.btnNavModules.BackColor = System.Drawing.Color.FromArgb(31, 84, 147);
+            this.btnNavModules.ForeColor = System.Drawing.Color.White;
+            this.btnNavModules.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnNavModules.FlatAppearance.BorderSize = 0;
+            this.btnNavModules.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnNavModules.Click += new System.EventHandler(this.btnNavModules_Click);
+
+            this.btnNavLecturers.Location = new System.Drawing.Point(495, 4);
+            this.btnNavLecturers.Size = new System.Drawing.Size(90, 28);
+            this.btnNavLecturers.Text = "Lecturers";
+            this.btnNavLecturers.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Bold);
+            this.btnNavLecturers.BackColor = System.Drawing.Color.FromArgb(31, 84, 147);
+            this.btnNavLecturers.ForeColor = System.Drawing.Color.White;
+            this.btnNavLecturers.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnNavLecturers.FlatAppearance.BorderSize = 0;
+            this.btnNavLecturers.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnNavLecturers.Click += new System.EventHandler(this.btnNavLecturers_Click);
+
+            this.pnlNav.Controls.Add(this.btnNavDashboard);
+            this.pnlNav.Controls.Add(this.btnNavStudents);
+            this.pnlNav.Controls.Add(this.btnNavCourses);
+            this.pnlNav.Controls.Add(this.btnNavDepartments);
+            this.pnlNav.Controls.Add(this.btnNavModules);
+            this.pnlNav.Controls.Add(this.btnNavLecturers);
 
             // ── Left Panel ──
             this.pnlLeft.BackColor = System.Drawing.Color.White;
@@ -348,6 +435,7 @@ namespace CollegeLMS
 
             // Add to Form
             this.Controls.Add(this.pnlTitle);
+            this.Controls.Add(this.pnlNav);
             this.Controls.Add(this.pnlLeft);
             this.Controls.Add(this.pnlStatus);
             this.Controls.Add(this.lblSearch);
@@ -356,6 +444,7 @@ namespace CollegeLMS
             this.Controls.Add(this.dataGridView1);
 
             this.pnlTitle.ResumeLayout(false);
+            this.pnlNav.ResumeLayout(false);
             this.pnlStatus.ResumeLayout(false);
             this.pnlLeft.ResumeLayout(false);
             this.pnlLeft.PerformLayout();
@@ -389,6 +478,13 @@ namespace CollegeLMS
         private System.Windows.Forms.Label lblSearch;
         private System.Windows.Forms.Label lblCount;
         private System.Windows.Forms.Panel pnlTitle;
+        private System.Windows.Forms.Panel pnlNav;
+        private System.Windows.Forms.Button btnNavDashboard;
+        private System.Windows.Forms.Button btnNavStudents;
+        private System.Windows.Forms.Button btnNavCourses;
+        private System.Windows.Forms.Button btnNavDepartments;
+        private System.Windows.Forms.Button btnNavModules;
+        private System.Windows.Forms.Button btnNavLecturers;
         private System.Windows.Forms.Panel pnlStatus;
         private System.Windows.Forms.Panel pnlLeft;
         private System.Windows.Forms.Label statusLabel;

@@ -46,16 +46,47 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.cs">
+    <Compile Include="CoursesForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="CoursesForm.Designer.cs">
+      <DependentUpon>CoursesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StudentsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StudentsForm.Designer.cs">
+      <DependentUpon>StudentsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dashboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dashboard.Designer.cs">
+      <DependentUpon>Dashboard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DepartmentsForm.cs">
+      <CustomToolNamespace>DepartmentsForm.cs</CustomToolNamespace>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DepartmentsForm.Designer.cs">
+      <DependentUpon>DepartmentsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LecturersForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LecturersForm.Designer.cs">
+      <DependentUpon>LecturersForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ModulesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ModulesForm.Designer.cs">
+      <DependentUpon>ModulesForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="StudentsForm.resx">
+      <DependentUpon>StudentsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
