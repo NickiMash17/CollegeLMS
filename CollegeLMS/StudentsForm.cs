@@ -1,4 +1,4 @@
-﻿// ============================================================
+// ============================================================
 // COPYRIGHT NOTICE
 // ============================================================
 // Project:     College Learner Management System (CollegeLMS)
@@ -8,7 +8,7 @@
 // Institution: CTU Training Solutions
 // Date:        12 February 2026
 //
-// © 2026 Nicolette Mashaba. All rights reserved.
+// � 2026 Nicolette Mashaba. All rights reserved.
 // This code is the intellectual property of Nicolette Mashaba.
 // Unauthorized copying, sharing, reuse, or redistribution of
 // this code, in whole or in part, is strictly prohibited
@@ -55,7 +55,7 @@ namespace CollegeLMS
             LoadStudents();
             SetupDataGridView();
             UpdateStudentCount();
-            statusLabel.Text = "✅ Connected to CTUCollegeDB";
+            statusLabel.Text = "? Connected to CTUCollegeDB";
             EnhanceUI();
         }
 
@@ -152,7 +152,7 @@ namespace CollegeLMS
         private void SetActiveNav(Button btn)
         {
             if (btn == null) return;
-            btn.BackColor = Color.FromArgb(24, 72, 128);
+            btn.BackColor = Color.FromArgb(27, 117, 180);
             activeNavButton = btn;
             pnlNav?.Invalidate();
         }
@@ -266,7 +266,7 @@ namespace CollegeLMS
             dataGridView1.EnableHeadersVisualStyles = false;
 
             // Header style
-            dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(31, 84, 147);
+            dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(27, 117, 180);
             dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
             dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Bold);
             dataGridView1.ColumnHeadersDefaultCellStyle.Padding = new Padding(5);
@@ -281,12 +281,12 @@ namespace CollegeLMS
             dataGridView1.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(235, 244, 255);
 
             // Selection style
-            dataGridView1.DefaultCellStyle.SelectionBackColor = Color.FromArgb(31, 84, 147);
+            dataGridView1.DefaultCellStyle.SelectionBackColor = Color.FromArgb(27, 117, 180);
             dataGridView1.DefaultCellStyle.SelectionForeColor = Color.White;
 
             // Grid appearance
             dataGridView1.RowHeadersVisible = false;
-            dataGridView1.GridColor = Color.LightSteelBlue;
+            dataGridView1.GridColor = Color.FromArgb(95, 151, 184);
             dataGridView1.BorderStyle = BorderStyle.None;
             dataGridView1.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dataGridView1.BackgroundColor = Color.White;
@@ -328,12 +328,12 @@ namespace CollegeLMS
                     adapter.Fill(currentTable);
                     dataGridView1.DataSource = currentTable;
                     UpdateStudentCount();
-                    statusLabel.Text = "✅ " + currentTable.Rows.Count + " students loaded successfully";
+                    statusLabel.Text = "? " + currentTable.Rows.Count + " students loaded successfully";
                 }
             }
             catch (Exception ex)
             {
-                statusLabel.Text = "❌ Connection Error: " + ex.Message;
+                statusLabel.Text = "? Connection Error: " + ex.Message;
                 MessageBox.Show("Database connection failed!\n\n" + ex.Message, "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -344,7 +344,7 @@ namespace CollegeLMS
         // =====================
         private void UpdateStudentCount()
         {
-            lblCount.Text = "👥 Total Students: " + currentTable.Rows.Count;
+            lblCount.Text = "?? Total Students: " + currentTable.Rows.Count;
         }
 
         // =====================
@@ -360,7 +360,7 @@ namespace CollegeLMS
                 txtLastName.Text = row.Cells["LastName"].Value.ToString();
                 txtAge.Text = row.Cells["Age"].Value.ToString();
                 txtCourseID.Text = row.Cells["CourseID"].Value.ToString();
-                statusLabel.Text = "📋 Selected: " + txtFirstName.Text + " " + txtLastName.Text
+                statusLabel.Text = "?? Selected: " + txtFirstName.Text + " " + txtLastName.Text
                                   + "  |  Course: " + txtCourseID.Text
                                   + "  |  Age: " + txtAge.Text;
             }
@@ -394,12 +394,12 @@ namespace CollegeLMS
                     adapter.Fill(currentTable);
                     dataGridView1.DataSource = currentTable;
                     UpdateStudentCount();
-                    statusLabel.Text = "🔍 Found " + currentTable.Rows.Count + " result(s) for: \"" + searchText + "\"";
+                    statusLabel.Text = "?? Found " + currentTable.Rows.Count + " result(s) for: \"" + searchText + "\"";
                 }
             }
             catch (Exception ex)
             {
-                statusLabel.Text = "❌ Search Error: " + ex.Message;
+                statusLabel.Text = "? Search Error: " + ex.Message;
             }
         }
 
@@ -410,7 +410,7 @@ namespace CollegeLMS
         {
             LoadStudents();
             txtSearch.Text = "";
-            statusLabel.Text = "🔄 Table refreshed";
+            statusLabel.Text = "?? Table refreshed";
         }
 
         // =====================
@@ -437,8 +437,8 @@ namespace CollegeLMS
                     cmd.Parameters.AddWithValue("@Age", txtAge.Text.Trim());
                     cmd.Parameters.AddWithValue("@CourseID", txtCourseID.Text.Trim());
                     cmd.ExecuteNonQuery();
-                    statusLabel.Text = "✅ Added: " + txtFirstName.Text + " " + txtLastName.Text;
-                    MessageBox.Show("✅ Student added successfully!\n\n" +
+                    statusLabel.Text = "? Added: " + txtFirstName.Text + " " + txtLastName.Text;
+                    MessageBox.Show("? Student added successfully!\n\n" +
                         "Name: " + txtFirstName.Text + " " + txtLastName.Text + "\n" +
                         "Course: " + txtCourseID.Text,
                         "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -448,7 +448,7 @@ namespace CollegeLMS
             }
             catch (Exception ex)
             {
-                statusLabel.Text = "❌ Error: " + ex.Message;
+                statusLabel.Text = "? Error: " + ex.Message;
                 MessageBox.Show("Error adding student:\n" + ex.Message, "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -487,8 +487,8 @@ namespace CollegeLMS
                         cmd.Parameters.AddWithValue("@Age", txtAge.Text.Trim());
                         cmd.Parameters.AddWithValue("@CourseID", txtCourseID.Text.Trim());
                         cmd.ExecuteNonQuery();
-                        statusLabel.Text = "✅ Updated: " + txtFirstName.Text + " " + txtLastName.Text;
-                        MessageBox.Show("✅ Student updated successfully!\n\n" +
+                        statusLabel.Text = "? Updated: " + txtFirstName.Text + " " + txtLastName.Text;
+                        MessageBox.Show("? Student updated successfully!\n\n" +
                             "Name: " + txtFirstName.Text + " " + txtLastName.Text,
                             "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         LoadStudents();
@@ -497,7 +497,7 @@ namespace CollegeLMS
                 }
                 catch (Exception ex)
                 {
-                    statusLabel.Text = "❌ Error: " + ex.Message;
+                    statusLabel.Text = "? Error: " + ex.Message;
                     MessageBox.Show("Error updating student:\n" + ex.Message, "Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
@@ -517,7 +517,7 @@ namespace CollegeLMS
             }
 
             DialogResult confirm = MessageBox.Show(
-                "⚠️ Are you sure you want to DELETE:\n\n" +
+                "?? Are you sure you want to DELETE:\n\n" +
                 "Name: " + txtFirstName.Text + " " + txtLastName.Text + "\n" +
                 "ID: " + txtStudentID.Text + "\n" +
                 "Course: " + txtCourseID.Text + "\n\n" +
@@ -534,8 +534,8 @@ namespace CollegeLMS
                         SqlCommand cmd = new SqlCommand("DELETE FROM Student WHERE StudentID=@StudentID", conn);
                         cmd.Parameters.AddWithValue("@StudentID", txtStudentID.Text);
                         cmd.ExecuteNonQuery();
-                        statusLabel.Text = "🗑️ Deleted: " + txtFirstName.Text + " " + txtLastName.Text;
-                        MessageBox.Show("🗑️ Student deleted successfully!", "Deleted",
+                        statusLabel.Text = "??? Deleted: " + txtFirstName.Text + " " + txtLastName.Text;
+                        MessageBox.Show("??? Student deleted successfully!", "Deleted",
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                         LoadStudents();
                         ClearFields();
@@ -543,7 +543,7 @@ namespace CollegeLMS
                 }
                 catch (Exception ex)
                 {
-                    statusLabel.Text = "❌ Error: " + ex.Message;
+                    statusLabel.Text = "? Error: " + ex.Message;
                     MessageBox.Show("Error deleting student:\n" + ex.Message, "Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
@@ -579,8 +579,8 @@ namespace CollegeLMS
                                         row["CourseID"]);
                         }
                     }
-                    statusLabel.Text = "📁 Exported to: " + saveDialog.FileName;
-                    MessageBox.Show("✅ Students exported successfully!\n\nSaved to:\n" + saveDialog.FileName,
+                    statusLabel.Text = "?? Exported to: " + saveDialog.FileName;
+                    MessageBox.Show("? Students exported successfully!\n\nSaved to:\n" + saveDialog.FileName,
                         "Export Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
@@ -611,7 +611,7 @@ namespace CollegeLMS
                     string[] headers = { "StudentID", "FirstName", "LastName", "Age", "CourseID" };
 
                     // Title
-                    g.DrawString("CTU College — Student List", titleFont, Brushes.DarkBlue, 50, y);
+                    g.DrawString("CTU College � Student List", titleFont, Brushes.DarkBlue, 50, y);
                     y += 30;
                     g.DrawString("Printed: " + DateTime.Now.ToString("dd MMM yyyy HH:mm"), dataFont, Brushes.Gray, 50, y);
                     y += 30;
@@ -622,7 +622,7 @@ namespace CollegeLMS
                     int x = 50;
                     foreach (string h in headers)
                     {
-                        g.FillRectangle(new SolidBrush(Color.FromArgb(31, 84, 147)), x, y, colWidths[Array.IndexOf(headers, h)], 25);
+                        g.FillRectangle(new SolidBrush(Color.FromArgb(27, 117, 180)), x, y, colWidths[Array.IndexOf(headers, h)], 25);
                         g.DrawString(h, headerFont, Brushes.White, x + 3, y + 4);
                         x += colWidths[Array.IndexOf(headers, h)];
                     }
@@ -658,7 +658,7 @@ namespace CollegeLMS
                 preview.Width = 900;
                 preview.Height = 700;
                 preview.ShowDialog();
-                statusLabel.Text = "🖨️ Print preview opened";
+                statusLabel.Text = "??? Print preview opened";
             }
             catch (Exception ex)
             {
@@ -674,7 +674,7 @@ namespace CollegeLMS
         {
             ClearFields();
             txtSearch.Text = "";
-            statusLabel.Text = "🧹 Fields cleared";
+            statusLabel.Text = "?? Fields cleared";
         }
 
         private void ClearFields()
@@ -722,3 +722,7 @@ namespace CollegeLMS
         }
     }
 }
+
+
+
+

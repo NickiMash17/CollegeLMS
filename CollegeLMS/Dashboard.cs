@@ -240,7 +240,7 @@ namespace CollegeLMS
             CardSpec spec = cardSpecs[btn];
 
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            using (Font iconFont = new Font("Arial", 16, FontStyle.Regular))
+            using (Font iconFont = new Font("Segoe UI Emoji", 18, FontStyle.Regular))
             using (Font titleFont = new Font("Arial", 13, FontStyle.Bold))
             using (Font subFont = new Font("Arial", 9, FontStyle.Regular))
             {

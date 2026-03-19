@@ -1,4 +1,4 @@
-﻿// ============================================================
+// ============================================================
 // COPYRIGHT NOTICE
 // ============================================================
 // Project:     College Learner Management System (CollegeLMS)
@@ -8,7 +8,7 @@
 // Institution: CTU Training Solutions
 // Date:        12 February 2026
 //
-// © 2026 Nicolette Mashaba. All rights reserved.
+// � 2026 Nicolette Mashaba. All rights reserved.
 // This code is the intellectual property of Nicolette Mashaba.
 // Unauthorized copying, sharing, reuse, or redistribution of
 // this code, in whole or in part, is strictly prohibited
@@ -73,8 +73,8 @@ namespace CollegeLMS
             this.pnlLeft.SuspendLayout();
             this.SuspendLayout();
 
-            // ── Title Panel (gradient painted in code) ──
-            this.pnlTitle.BackColor = System.Drawing.Color.FromArgb(31, 84, 147);
+            // -- Title Panel (gradient painted in code) --
+            this.pnlTitle.BackColor = System.Drawing.Color.FromArgb(27, 117, 180);
             this.pnlTitle.Location = new System.Drawing.Point(0, 0);
             this.pnlTitle.Size = new System.Drawing.Size(1150, 90);
             this.pnlTitle.Name = "pnlTitle";
@@ -84,14 +84,14 @@ namespace CollegeLMS
                 System.Drawing.Drawing2D.LinearGradientBrush brush =
                     new System.Drawing.Drawing2D.LinearGradientBrush(
                         this.pnlTitle.ClientRectangle,
-                        System.Drawing.Color.FromArgb(15, 52, 112),
-                        System.Drawing.Color.FromArgb(52, 120, 200),
+                        System.Drawing.Color.FromArgb(13, 51, 86),
+                        System.Drawing.Color.FromArgb(62, 174, 223),
                         System.Drawing.Drawing2D.LinearGradientMode.Horizontal);
                 e.Graphics.FillRectangle(brush, this.pnlTitle.ClientRectangle);
             };
 
-            // ── Title Label ──
-            this.lblTitle.Text = "🎓  Student APP";
+            // -- Title Label --
+            this.lblTitle.Text = "??  Student APP";
             this.lblTitle.Font = new System.Drawing.Font("Arial", 26, System.Drawing.FontStyle.Bold);
             this.lblTitle.ForeColor = System.Drawing.Color.White;
             this.lblTitle.Location = new System.Drawing.Point(370, 8);
@@ -99,17 +99,17 @@ namespace CollegeLMS
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.BackColor = System.Drawing.Color.Transparent;
 
-            // ── SubTitle Label ──
-            this.lblSubTitle.Text = "College Learner Management System  —  CTUCollegeDB";
+            // -- SubTitle Label --
+            this.lblSubTitle.Text = "College Learner Management System  �  CTUCollegeDB";
             this.lblSubTitle.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Italic);
-            this.lblSubTitle.ForeColor = System.Drawing.Color.LightSteelBlue;
+            this.lblSubTitle.ForeColor = System.Drawing.Color.FromArgb(95, 151, 184);
             this.lblSubTitle.Location = new System.Drawing.Point(390, 58);
             this.lblSubTitle.Size = new System.Drawing.Size(420, 20);
             this.lblSubTitle.Name = "lblSubTitle";
             this.lblSubTitle.BackColor = System.Drawing.Color.Transparent;
 
-            // ── Nav Bar ──
-            this.pnlNav.BackColor = System.Drawing.Color.FromArgb(20, 63, 120);
+            // -- Nav Bar --
+            this.pnlNav.BackColor = System.Drawing.Color.FromArgb(13, 51, 86);
             this.pnlNav.Location = new System.Drawing.Point(0, 90);
             this.pnlNav.Size = new System.Drawing.Size(1150, 36);
             this.pnlNav.Name = "pnlNav";
@@ -118,7 +118,7 @@ namespace CollegeLMS
             this.btnNavDashboard.Size = new System.Drawing.Size(95, 28);
             this.btnNavDashboard.Text = "Dashboard";
             this.btnNavDashboard.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Bold);
-            this.btnNavDashboard.BackColor = System.Drawing.Color.FromArgb(31, 84, 147);
+            this.btnNavDashboard.BackColor = System.Drawing.Color.FromArgb(27, 117, 180);
             this.btnNavDashboard.ForeColor = System.Drawing.Color.White;
             this.btnNavDashboard.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnNavDashboard.FlatAppearance.BorderSize = 0;
@@ -129,7 +129,7 @@ namespace CollegeLMS
             this.btnNavStudents.Size = new System.Drawing.Size(90, 28);
             this.btnNavStudents.Text = "Students";
             this.btnNavStudents.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Bold);
-            this.btnNavStudents.BackColor = System.Drawing.Color.FromArgb(31, 84, 147);
+            this.btnNavStudents.BackColor = System.Drawing.Color.FromArgb(27, 117, 180);
             this.btnNavStudents.ForeColor = System.Drawing.Color.White;
             this.btnNavStudents.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnNavStudents.FlatAppearance.BorderSize = 0;
@@ -140,7 +140,7 @@ namespace CollegeLMS
             this.btnNavCourses.Size = new System.Drawing.Size(85, 28);
             this.btnNavCourses.Text = "Courses";
             this.btnNavCourses.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Bold);
-            this.btnNavCourses.BackColor = System.Drawing.Color.FromArgb(31, 84, 147);
+            this.btnNavCourses.BackColor = System.Drawing.Color.FromArgb(27, 117, 180);
             this.btnNavCourses.ForeColor = System.Drawing.Color.White;
             this.btnNavCourses.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnNavCourses.FlatAppearance.BorderSize = 0;
@@ -151,7 +151,7 @@ namespace CollegeLMS
             this.btnNavDepartments.Size = new System.Drawing.Size(105, 28);
             this.btnNavDepartments.Text = "Departments";
             this.btnNavDepartments.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Bold);
-            this.btnNavDepartments.BackColor = System.Drawing.Color.FromArgb(31, 84, 147);
+            this.btnNavDepartments.BackColor = System.Drawing.Color.FromArgb(27, 117, 180);
             this.btnNavDepartments.ForeColor = System.Drawing.Color.White;
             this.btnNavDepartments.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnNavDepartments.FlatAppearance.BorderSize = 0;
@@ -162,7 +162,7 @@ namespace CollegeLMS
             this.btnNavModules.Size = new System.Drawing.Size(85, 28);
             this.btnNavModules.Text = "Modules";
             this.btnNavModules.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Bold);
-            this.btnNavModules.BackColor = System.Drawing.Color.FromArgb(31, 84, 147);
+            this.btnNavModules.BackColor = System.Drawing.Color.FromArgb(27, 117, 180);
             this.btnNavModules.ForeColor = System.Drawing.Color.White;
             this.btnNavModules.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnNavModules.FlatAppearance.BorderSize = 0;
@@ -173,7 +173,7 @@ namespace CollegeLMS
             this.btnNavLecturers.Size = new System.Drawing.Size(90, 28);
             this.btnNavLecturers.Text = "Lecturers";
             this.btnNavLecturers.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Bold);
-            this.btnNavLecturers.BackColor = System.Drawing.Color.FromArgb(31, 84, 147);
+            this.btnNavLecturers.BackColor = System.Drawing.Color.FromArgb(27, 117, 180);
             this.btnNavLecturers.ForeColor = System.Drawing.Color.White;
             this.btnNavLecturers.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnNavLecturers.FlatAppearance.BorderSize = 0;
@@ -187,57 +187,57 @@ namespace CollegeLMS
             this.pnlNav.Controls.Add(this.btnNavModules);
             this.pnlNav.Controls.Add(this.btnNavLecturers);
 
-            // ── Left Panel ──
+            // -- Left Panel --
             this.pnlLeft.BackColor = System.Drawing.Color.White;
             this.pnlLeft.Location = new System.Drawing.Point(0, 90);
             this.pnlLeft.Size = new System.Drawing.Size(470, 500);
             this.pnlLeft.Name = "pnlLeft";
 
-            // ── Student Count Label ──
-            this.lblCount.Text = "👥 Total Students: 0";
+            // -- Student Count Label --
+            this.lblCount.Text = "?? Total Students: 0";
             this.lblCount.Font = new System.Drawing.Font("Arial", 10, System.Drawing.FontStyle.Bold);
-            this.lblCount.ForeColor = System.Drawing.Color.FromArgb(31, 84, 147);
+            this.lblCount.ForeColor = System.Drawing.Color.FromArgb(27, 117, 180);
             this.lblCount.Location = new System.Drawing.Point(20, 15);
             this.lblCount.Size = new System.Drawing.Size(220, 22);
             this.lblCount.Name = "lblCount";
 
-            // ── Labels ──
+            // -- Labels --
             this.lblStudentID.Text = "Student ID";
             this.lblStudentID.Location = new System.Drawing.Point(20, 55);
             this.lblStudentID.Size = new System.Drawing.Size(110, 22);
             this.lblStudentID.Font = new System.Drawing.Font("Arial", 10, System.Drawing.FontStyle.Bold);
-            this.lblStudentID.ForeColor = System.Drawing.Color.FromArgb(31, 84, 147);
+            this.lblStudentID.ForeColor = System.Drawing.Color.FromArgb(27, 117, 180);
             this.lblStudentID.Name = "lblStudentID";
 
             this.lblFirstName.Text = "First Name";
             this.lblFirstName.Location = new System.Drawing.Point(20, 100);
             this.lblFirstName.Size = new System.Drawing.Size(110, 22);
             this.lblFirstName.Font = new System.Drawing.Font("Arial", 10, System.Drawing.FontStyle.Bold);
-            this.lblFirstName.ForeColor = System.Drawing.Color.FromArgb(31, 84, 147);
+            this.lblFirstName.ForeColor = System.Drawing.Color.FromArgb(27, 117, 180);
             this.lblFirstName.Name = "lblFirstName";
 
             this.lblLastName.Text = "Last Name";
             this.lblLastName.Location = new System.Drawing.Point(20, 145);
             this.lblLastName.Size = new System.Drawing.Size(110, 22);
             this.lblLastName.Font = new System.Drawing.Font("Arial", 10, System.Drawing.FontStyle.Bold);
-            this.lblLastName.ForeColor = System.Drawing.Color.FromArgb(31, 84, 147);
+            this.lblLastName.ForeColor = System.Drawing.Color.FromArgb(27, 117, 180);
             this.lblLastName.Name = "lblLastName";
 
             this.lblAge.Text = "Age";
             this.lblAge.Location = new System.Drawing.Point(20, 190);
             this.lblAge.Size = new System.Drawing.Size(110, 22);
             this.lblAge.Font = new System.Drawing.Font("Arial", 10, System.Drawing.FontStyle.Bold);
-            this.lblAge.ForeColor = System.Drawing.Color.FromArgb(31, 84, 147);
+            this.lblAge.ForeColor = System.Drawing.Color.FromArgb(27, 117, 180);
             this.lblAge.Name = "lblAge";
 
             this.lblCourseID.Text = "Course Name";
             this.lblCourseID.Location = new System.Drawing.Point(20, 235);
             this.lblCourseID.Size = new System.Drawing.Size(110, 22);
             this.lblCourseID.Font = new System.Drawing.Font("Arial", 10, System.Drawing.FontStyle.Bold);
-            this.lblCourseID.ForeColor = System.Drawing.Color.FromArgb(31, 84, 147);
+            this.lblCourseID.ForeColor = System.Drawing.Color.FromArgb(27, 117, 180);
             this.lblCourseID.Name = "lblCourseID";
 
-            // ── TextBoxes ──
+            // -- TextBoxes --
             this.txtStudentID.Location = new System.Drawing.Point(145, 53);
             this.txtStudentID.Size = new System.Drawing.Size(280, 28);
             this.txtStudentID.Font = new System.Drawing.Font("Arial", 10);
@@ -269,13 +269,13 @@ namespace CollegeLMS
             this.txtCourseID.BackColor = System.Drawing.Color.AliceBlue;
             this.txtCourseID.Name = "txtCourseID";
 
-            // ── Buttons Row 1 ──
+            // -- Buttons Row 1 --
             this.btnView.Location = new System.Drawing.Point(20, 285);
             this.btnView.Size = new System.Drawing.Size(90, 38);
-            this.btnView.Text = "🔄 View";
+            this.btnView.Text = "?? View";
             this.btnView.Name = "btnView";
             this.btnView.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Bold);
-            this.btnView.BackColor = System.Drawing.Color.FromArgb(31, 84, 147);
+            this.btnView.BackColor = System.Drawing.Color.FromArgb(27, 117, 180);
             this.btnView.ForeColor = System.Drawing.Color.White;
             this.btnView.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnView.FlatAppearance.BorderSize = 0;
@@ -284,7 +284,7 @@ namespace CollegeLMS
 
             this.btnAdd.Location = new System.Drawing.Point(120, 285);
             this.btnAdd.Size = new System.Drawing.Size(90, 38);
-            this.btnAdd.Text = "➕ Add";
+            this.btnAdd.Text = "? Add";
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Bold);
             this.btnAdd.BackColor = System.Drawing.Color.SeaGreen;
@@ -296,7 +296,7 @@ namespace CollegeLMS
 
             this.btnUpdate.Location = new System.Drawing.Point(220, 285);
             this.btnUpdate.Size = new System.Drawing.Size(90, 38);
-            this.btnUpdate.Text = "✏️ Update";
+            this.btnUpdate.Text = "?? Update";
             this.btnUpdate.Name = "btnUpdate";
             this.btnUpdate.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Bold);
             this.btnUpdate.BackColor = System.Drawing.Color.DarkOrange;
@@ -308,7 +308,7 @@ namespace CollegeLMS
 
             this.btnDelete.Location = new System.Drawing.Point(320, 285);
             this.btnDelete.Size = new System.Drawing.Size(90, 38);
-            this.btnDelete.Text = "🗑️ Delete";
+            this.btnDelete.Text = "??? Delete";
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Bold);
             this.btnDelete.BackColor = System.Drawing.Color.Crimson;
@@ -318,10 +318,10 @@ namespace CollegeLMS
             this.btnDelete.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
 
-            // ── Buttons Row 2 ──
+            // -- Buttons Row 2 --
             this.btnClear.Location = new System.Drawing.Point(20, 335);
             this.btnClear.Size = new System.Drawing.Size(90, 38);
-            this.btnClear.Text = "🧹 Clear";
+            this.btnClear.Text = "?? Clear";
             this.btnClear.Name = "btnClear";
             this.btnClear.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Bold);
             this.btnClear.BackColor = System.Drawing.Color.SlateGray;
@@ -333,7 +333,7 @@ namespace CollegeLMS
 
             this.btnExport.Location = new System.Drawing.Point(120, 335);
             this.btnExport.Size = new System.Drawing.Size(90, 38);
-            this.btnExport.Text = "📁 Export";
+            this.btnExport.Text = "?? Export";
             this.btnExport.Name = "btnExport";
             this.btnExport.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Bold);
             this.btnExport.BackColor = System.Drawing.Color.Teal;
@@ -345,7 +345,7 @@ namespace CollegeLMS
 
             this.btnPrint.Location = new System.Drawing.Point(220, 335);
             this.btnPrint.Size = new System.Drawing.Size(90, 38);
-            this.btnPrint.Text = "🖨️ Print";
+            this.btnPrint.Text = "??? Print";
             this.btnPrint.Name = "btnPrint";
             this.btnPrint.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Bold);
             this.btnPrint.BackColor = System.Drawing.Color.DarkSlateBlue;
@@ -355,12 +355,12 @@ namespace CollegeLMS
             this.btnPrint.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnPrint.Click += new System.EventHandler(this.btnPrint_Click);
 
-            // ── Search Bar ──
-            this.lblSearch.Text = "🔍 Search:";
+            // -- Search Bar --
+            this.lblSearch.Text = "?? Search:";
             this.lblSearch.Location = new System.Drawing.Point(490, 103);
             this.lblSearch.Size = new System.Drawing.Size(80, 22);
             this.lblSearch.Font = new System.Drawing.Font("Arial", 10, System.Drawing.FontStyle.Bold);
-            this.lblSearch.ForeColor = System.Drawing.Color.FromArgb(31, 84, 147);
+            this.lblSearch.ForeColor = System.Drawing.Color.FromArgb(27, 117, 180);
             this.lblSearch.Name = "lblSearch";
 
             this.txtSearch.Location = new System.Drawing.Point(580, 100);
@@ -371,17 +371,17 @@ namespace CollegeLMS
 
             this.btnSearch.Location = new System.Drawing.Point(900, 98);
             this.btnSearch.Size = new System.Drawing.Size(90, 32);
-            this.btnSearch.Text = "🔍 Search";
+            this.btnSearch.Text = "?? Search";
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Bold);
-            this.btnSearch.BackColor = System.Drawing.Color.FromArgb(31, 84, 147);
+            this.btnSearch.BackColor = System.Drawing.Color.FromArgb(27, 117, 180);
             this.btnSearch.ForeColor = System.Drawing.Color.White;
             this.btnSearch.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnSearch.FlatAppearance.BorderSize = 0;
             this.btnSearch.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
 
-            // ── DataGridView ──
+            // -- DataGridView --
             this.dataGridView1.Location = new System.Drawing.Point(480, 140);
             this.dataGridView1.Size = new System.Drawing.Size(640, 400);
             this.dataGridView1.Name = "dataGridView1";
@@ -392,8 +392,8 @@ namespace CollegeLMS
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
 
-            // ── Status Bar ──
-            this.pnlStatus.BackColor = System.Drawing.Color.FromArgb(31, 84, 147);
+            // -- Status Bar --
+            this.pnlStatus.BackColor = System.Drawing.Color.FromArgb(27, 117, 180);
             this.pnlStatus.Location = new System.Drawing.Point(0, 555);
             this.pnlStatus.Size = new System.Drawing.Size(1150, 32);
             this.pnlStatus.Name = "pnlStatus";
@@ -406,7 +406,7 @@ namespace CollegeLMS
             this.statusLabel.Size = new System.Drawing.Size(900, 18);
             this.statusLabel.Name = "statusLabel";
 
-            // ── Form ──
+            // -- Form --
             this.ClientSize = new System.Drawing.Size(1150, 587);
             this.BackColor = System.Drawing.Color.FromArgb(245, 248, 255);
             this.Text = "Student Application Form";
@@ -490,3 +490,7 @@ namespace CollegeLMS
         private System.Windows.Forms.Label statusLabel;
     }
 }
+
+
+
+

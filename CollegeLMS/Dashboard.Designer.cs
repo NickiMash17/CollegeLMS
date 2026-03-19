@@ -74,7 +74,7 @@ namespace CollegeLMS
             // ── SubTitle ──
             this.lblSubTitle.Text = "College Learner Management System : CTUCollegeDB";
             this.lblSubTitle.Font = new System.Drawing.Font("Arial", 11, System.Drawing.FontStyle.Italic);
-            this.lblSubTitle.ForeColor = System.Drawing.Color.LightSteelBlue;
+            this.lblSubTitle.ForeColor = System.Drawing.Color.FromArgb(140, 204, 235);
             this.lblSubTitle.BackColor = System.Drawing.Color.Transparent;
             this.lblSubTitle.Location = new System.Drawing.Point(250, 78);
             this.lblSubTitle.Size = new System.Drawing.Size(600, 24);
@@ -82,7 +82,7 @@ namespace CollegeLMS
             // ── Date Time ──
             this.lblDateTime.Text = System.DateTime.Now.ToString("dddd, dd MMMM yyyy");
             this.lblDateTime.Font = new System.Drawing.Font("Arial", 10);
-            this.lblDateTime.ForeColor = System.Drawing.Color.LightSteelBlue;
+            this.lblDateTime.ForeColor = System.Drawing.Color.FromArgb(140, 204, 235);
             this.lblDateTime.BackColor = System.Drawing.Color.Transparent;
             this.lblDateTime.Location = new System.Drawing.Point(780, 18);
             this.lblDateTime.Size = new System.Drawing.Size(190, 22);
@@ -189,7 +189,7 @@ namespace CollegeLMS
             // Students Card
             this.btnStudents.Location = new System.Drawing.Point(60, 300);
             this.btnStudents.Size = new System.Drawing.Size(240, 140);
-            this.btnStudents.Text = "👨‍🎓\r\nStudents\r\nManage Students";
+            this.btnStudents.Text = "Students\r\nManage Students";
             this.btnStudents.Font = new System.Drawing.Font("Arial", 12, System.Drawing.FontStyle.Bold);
             this.btnStudents.BackColor = System.Drawing.Color.FromArgb(31, 84, 147);
             this.btnStudents.ForeColor = System.Drawing.Color.White;
@@ -201,7 +201,7 @@ namespace CollegeLMS
             // Courses Card
             this.btnCourses.Location = new System.Drawing.Point(310, 300);
             this.btnCourses.Size = new System.Drawing.Size(240, 140);
-            this.btnCourses.Text = "📚\r\nCourses\r\nManage Courses";
+            this.btnCourses.Text = "Courses\r\nManage Courses";
             this.btnCourses.Font = new System.Drawing.Font("Arial", 12, System.Drawing.FontStyle.Bold);
             this.btnCourses.BackColor = System.Drawing.Color.SeaGreen;
             this.btnCourses.ForeColor = System.Drawing.Color.White;
@@ -213,7 +213,7 @@ namespace CollegeLMS
             // Departments Card
             this.btnDepartments.Location = new System.Drawing.Point(560, 300);
             this.btnDepartments.Size = new System.Drawing.Size(240, 140);
-            this.btnDepartments.Text = "🏢\r\nDepartments\r\nManage Departments";
+            this.btnDepartments.Text = "Departments\r\nManage Departments";
             this.btnDepartments.Font = new System.Drawing.Font("Arial", 12, System.Drawing.FontStyle.Bold);
             this.btnDepartments.BackColor = System.Drawing.Color.DarkOrange;
             this.btnDepartments.ForeColor = System.Drawing.Color.White;
@@ -225,7 +225,7 @@ namespace CollegeLMS
             // Modules Card
             this.btnModules.Location = new System.Drawing.Point(810, 300);
             this.btnModules.Size = new System.Drawing.Size(240, 140);
-            this.btnModules.Text = "📖\r\nModules\r\nManage Modules";
+            this.btnModules.Text = "Modules\r\nManage Modules";
             this.btnModules.Font = new System.Drawing.Font("Arial", 12, System.Drawing.FontStyle.Bold);
             this.btnModules.BackColor = System.Drawing.Color.Teal;
             this.btnModules.ForeColor = System.Drawing.Color.White;
@@ -239,7 +239,7 @@ namespace CollegeLMS
             // Lecturers Card
             this.btnLecturers.Location = new System.Drawing.Point(390, 490);
             this.btnLecturers.Size = new System.Drawing.Size(240, 140);
-            this.btnLecturers.Text = "👨‍🏫\r\nLecturers\r\nManage Lecturers";
+            this.btnLecturers.Text = "Lecturers\r\nManage Lecturers";
             this.btnLecturers.Font = new System.Drawing.Font("Arial", 12, System.Drawing.FontStyle.Bold);
             this.btnLecturers.BackColor = System.Drawing.Color.DarkSlateBlue;
             this.btnLecturers.ForeColor = System.Drawing.Color.White;
