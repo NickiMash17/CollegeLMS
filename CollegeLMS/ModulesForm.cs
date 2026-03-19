@@ -1,10 +1,10 @@
-// ============================================================
+﻿// ============================================================
 // COPYRIGHT NOTICE
 // ============================================================
 // Project:     College Learner Management System (CollegeLMS)
 // Author:      Nicolette Mashaba
 // Student No:  20232990
-// � 2026 Nicolette Mashaba. All rights reserved.
+// � 2026 Nicolette Mashaba. All rights reserved.
 // ============================================================
 
 using System;
@@ -54,6 +54,7 @@ namespace CollegeLMS
 
         private void EnhanceUI()
         {
+            ApplyIconText();
             ApplyButtonHover(btnAdd);
             ApplyButtonHover(btnUpdate);
             ApplyButtonHover(btnDelete);
@@ -132,7 +133,7 @@ namespace CollegeLMS
         private void SetActiveNav(Button btn)
         {
             if (btn == null) return;
-            btn.BackColor = Color.FromArgb(27, 117, 180);
+            btn.BackColor = Color.FromArgb(31, 84, 147);
             activeNavButton = btn;
             pnlNav?.Invalidate();
         }
@@ -228,7 +229,7 @@ namespace CollegeLMS
         private void SetupGrid()
         {
             dataGridView1.EnableHeadersVisualStyles = false;
-            dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(27, 117, 180);
+            dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(31, 84, 147);
             dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
             dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Bold);
             dataGridView1.ColumnHeadersHeight = 38;
@@ -236,7 +237,7 @@ namespace CollegeLMS
             dataGridView1.DefaultCellStyle.Padding = new Padding(6, 3, 6, 3);
             dataGridView1.RowTemplate.Height = 34;
             dataGridView1.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(235, 244, 255);
-            dataGridView1.DefaultCellStyle.SelectionBackColor = Color.FromArgb(27, 117, 180);
+            dataGridView1.DefaultCellStyle.SelectionBackColor = Color.FromArgb(31, 84, 147);
             dataGridView1.DefaultCellStyle.SelectionForeColor = Color.White;
             dataGridView1.RowHeadersVisible = false;
             dataGridView1.BorderStyle = BorderStyle.None;
@@ -272,7 +273,7 @@ namespace CollegeLMS
                 txtModuleName.Text = row.Cells["ModuleName"].Value.ToString();
                 txtCourseID.Text = row.Cells["CourseID"].Value.ToString();
                 txtCredits.Text = row.Cells["Credits"].Value.ToString();
-                statusLabel.Text = "?? Selected: " + txtModuleName.Text;
+                statusLabel.Text = "📋 Selected: " + txtModuleName.Text;
             }
         }
 
@@ -354,7 +355,7 @@ namespace CollegeLMS
                         SqlCommand cmd = new SqlCommand("DELETE FROM Module WHERE ModuleID=@ModuleID", conn);
                         cmd.Parameters.AddWithValue("@ModuleID", txtModuleID.Text);
                         cmd.ExecuteNonQuery();
-                        MessageBox.Show("??? Module deleted!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("🗑️ Module deleted!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         LoadModules();
                         ClearFields();
                     }
@@ -404,16 +405,27 @@ namespace CollegeLMS
             this.Close();
         }
 
+                private void ApplyIconText()
+        {
+            if (lblTitle != null) lblTitle.Text = "📖  Modules Management";
+            if (btnAdd != null) btnAdd.Text = "➕ Add";
+            if (btnUpdate != null) btnUpdate.Text = "✏️ Update";
+            if (btnDelete != null) btnDelete.Text = "🗑️ Delete";
+            if (btnClear != null) btnClear.Text = "🧹 Clear";
+            if (btnBack != null) btnBack.Text = "⬅️ Back to Dashboard";
+        }
+
         private void ClearFields()
         {
             txtModuleID.Text = "";
             txtModuleName.Text = "";
             txtCourseID.Text = "";
             txtCredits.Text = "";
-            statusLabel.Text = "?? Fields cleared";
+            statusLabel.Text = "🧹 Fields cleared";
         }
 
     }
 }
+
 
 
