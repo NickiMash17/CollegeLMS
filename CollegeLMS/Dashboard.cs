@@ -21,6 +21,7 @@ namespace CollegeLMS
         private readonly Dictionary<Button, Color> cardColors = new Dictionary<Button, Color>();
         private readonly Dictionary<Button, CardSpec> cardSpecs = new Dictionary<Button, CardSpec>();
         private Button activeNavButton;
+        private PictureBox bgPicture;
 
         public Dashboard()
         {
@@ -28,6 +29,15 @@ namespace CollegeLMS
             this.DoubleBuffered = true;
             this.Resize += Dashboard_Resize;
             this.Paint += Dashboard_Paint;
+
+            // Background image container (ensures image shows behind all controls)
+            bgPicture = new PictureBox
+            {
+                Dock = DockStyle.Fill,
+                SizeMode = PictureBoxSizeMode.StretchImage
+            };
+            Controls.Add(bgPicture);
+            bgPicture.SendToBack();
 
             SetupCard(btnStudents, "👨‍🎓", "Students", "Manage Students");
             SetupCard(btnCourses, "📚", "Courses", "Manage Courses");
@@ -278,21 +288,62 @@ namespace CollegeLMS
         {
             try
             {
-                string url = "https://cdn.pixabay.com/photo/2016/01/16/01/00/blue-1142745_1280.jpg";
-                using (WebClient client = new WebClient())
+                string localFile = ResolveLocalBackgroundPath("waves-bent-paper-cut-style.jpg");
+                Image img;
+
+                if (!string.IsNullOrEmpty(localFile) && File.Exists(localFile))
                 {
-                    byte[] data = client.DownloadData(url);
-                    using (MemoryStream ms = new MemoryStream(data))
+                    img = Image.FromFile(localFile);
+                }
+                else
+                {
+                    string url = "https://cdn.pixabay.com/photo/2016/01/16/01/00/blue-1142745_1280.jpg";
+                    using (WebClient client = new WebClient())
                     {
-                        BackgroundImage = Image.FromStream(ms);
-                        BackgroundImageLayout = ImageLayout.Stretch;
+                        byte[] data = client.DownloadData(url);
+                        using (MemoryStream ms = new MemoryStream(data))
+                        {
+                            img = Image.FromStream(ms);
+                        }
                     }
+                }
+
+                if (bgPicture != null)
+                {
+                    bgPicture.Image = img;
+                }
+                else
+                {
+                    BackgroundImage = img;
+                    BackgroundImageLayout = ImageLayout.Stretch;
                 }
             }
             catch
             {
                 // If download fails, keep the default background.
             }
+        }
+
+        private string ResolveLocalBackgroundPath(string fileName)
+        {
+            try
+            {
+                string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                string candidate1 = Path.GetFullPath(Path.Combine(baseDir, "..", "..", fileName));
+                if (File.Exists(candidate1)) return candidate1;
+
+                string candidate2 = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", fileName));
+                if (File.Exists(candidate2)) return candidate2;
+
+                string candidate3 = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, fileName));
+                if (File.Exists(candidate3)) return candidate3;
+            }
+            catch
+            {
+                // Ignore path resolution errors
+            }
+
+            return null;
         }
 
         private class CardSpec
