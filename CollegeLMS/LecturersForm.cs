@@ -1,14 +1,13 @@
-﻿// ============================================================
+// ============================================================
 // COPYRIGHT NOTICE
 // ============================================================
 // Project:     College Learner Management System (CollegeLMS)
 // Author:      Nicolette Mashaba
 // Student No:  20232990
-// � 2026 Nicolette Mashaba. All rights reserved.
+// ? 2026 Nicolette Mashaba. All rights reserved.
 // ============================================================
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -79,15 +78,20 @@ namespace CollegeLMS
             CenterNavButtons();
             ApplyRoundedAll();
             if (pnlNav != null) pnlNav.Paint += NavBar_Paint;
+            PolishStatusBar();
         }
 
         private void CenterHeader()
         {
             if (pnlTitle == null || lblTitle == null || lblSubTitle == null) return;
+            lblTitle.Font = new Font("Arial", 24, FontStyle.Bold);
+            lblSubTitle.Font = new Font("Arial", 10, FontStyle.Italic);
             lblTitle.TextAlign = ContentAlignment.MiddleCenter;
             lblSubTitle.TextAlign = ContentAlignment.MiddleCenter;
             lblTitle.Left = (pnlTitle.Width - lblTitle.Width) / 2;
             lblSubTitle.Left = (pnlTitle.Width - lblSubTitle.Width) / 2;
+            lblTitle.Top = 10;
+            lblSubTitle.Top = lblTitle.Bottom + 4;
         }
 
         private void CenterNavButtons()
@@ -150,11 +154,11 @@ namespace CollegeLMS
 
         private void ApplyRoundedAll()
         {
-            ApplyRounded(btnAdd, 8);
-            ApplyRounded(btnUpdate, 8);
-            ApplyRounded(btnDelete, 8);
-            ApplyRounded(btnClear, 8);
-            ApplyRounded(btnBack, 8);
+            ApplyRounded(btnAdd, 10);
+            ApplyRounded(btnUpdate, 10);
+            ApplyRounded(btnDelete, 10);
+            ApplyRounded(btnClear, 10);
+            ApplyRounded(btnBack, 10);
         }
 
         private void ApplyRounded(Button btn, int radius)
@@ -242,6 +246,24 @@ namespace CollegeLMS
             dataGridView1.RowHeadersVisible = false;
             dataGridView1.BorderStyle = BorderStyle.None;
             dataGridView1.BackgroundColor = Color.White;
+            dataGridView1.CellMouseEnter += (s, e) =>
+            {
+                if (e.RowIndex >= 0)
+                {
+                    dataGridView1.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.FromArgb(210, 230, 255);
+                    dataGridView1.Rows[e.RowIndex].DefaultCellStyle.ForeColor = Color.Black;
+                }
+            };
+            dataGridView1.CellMouseLeave += (s, e) =>
+            {
+                if (e.RowIndex >= 0)
+                {
+                    dataGridView1.Rows[e.RowIndex].DefaultCellStyle.BackColor = e.RowIndex % 2 == 0
+                        ? Color.White
+                        : Color.FromArgb(235, 244, 255);
+                    dataGridView1.Rows[e.RowIndex].DefaultCellStyle.ForeColor = Color.Black;
+                }
+            };
         }
 
         private void LoadLecturers()
@@ -255,12 +277,12 @@ namespace CollegeLMS
                     currentTable = new DataTable();
                     adapter.Fill(currentTable);
                     dataGridView1.DataSource = currentTable;
-                    statusLabel.Text = "? " + currentTable.Rows.Count + " lecturers loaded";
+                    statusLabel.Text = "✅ " + currentTable.Rows.Count + " lecturers loaded";
                 }
             }
             catch (Exception ex)
             {
-                statusLabel.Text = "? Error: " + ex.Message;
+                statusLabel.Text = "❌ Error: " + ex.Message;
             }
         }
 
@@ -408,7 +430,7 @@ namespace CollegeLMS
             // Already on Lecturers
         }
 
-                private void ApplyIconText()
+        private void ApplyIconText()
         {
             if (lblTitle != null) lblTitle.Text = "👨‍🏫  Lecturers Management";
             if (btnAdd != null) btnAdd.Text = "➕ Add";
@@ -416,6 +438,14 @@ namespace CollegeLMS
             if (btnDelete != null) btnDelete.Text = "🗑️ Delete";
             if (btnClear != null) btnClear.Text = "🧹 Clear";
             if (btnBack != null) btnBack.Text = "⬅️ Back to Dashboard";
+        }
+
+        private void PolishStatusBar()
+        {
+            if (statusLabel == null) return;
+            statusLabel.AutoSize = false;
+            statusLabel.TextAlign = ContentAlignment.MiddleLeft;
+            statusLabel.Padding = new Padding(8, 0, 0, 0);
         }
 
         private void ClearFields()
@@ -430,6 +460,7 @@ namespace CollegeLMS
 
     }
 }
+
 
 
 

@@ -1,4 +1,4 @@
-﻿// ============================================================
+// ============================================================
 // COPYRIGHT NOTICE
 // ============================================================
 // Project:     College Learner Management System (CollegeLMS)
@@ -8,7 +8,7 @@
 // Institution: CTU Training Solutions
 // Date:        12 February 2026
 //
-// � 2026 Nicolette Mashaba. All rights reserved.
+// ? 2026 Nicolette Mashaba. All rights reserved.
 // This code is the intellectual property of Nicolette Mashaba.
 // Unauthorized copying, sharing, reuse, or redistribution of
 // this code, in whole or in part, is strictly prohibited
@@ -18,7 +18,6 @@
 // ============================================================
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -55,7 +54,7 @@ namespace CollegeLMS
             LoadStudents();
             SetupDataGridView();
             UpdateStudentCount();
-            statusLabel.Text = "? Connected to CTUCollegeDB";
+            statusLabel.Text = "✅ Connected to CTUCollegeDB";
             EnhanceUI();
         }
 
@@ -99,15 +98,20 @@ namespace CollegeLMS
             CenterNavButtons();
             ApplyRoundedAll();
             if (pnlNav != null) pnlNav.Paint += NavBar_Paint;
+            PolishStatusBar();
         }
 
         private void CenterHeader()
         {
             if (pnlTitle == null || lblTitle == null || lblSubTitle == null) return;
+            lblTitle.Font = new Font("Arial", 24, FontStyle.Bold);
+            lblSubTitle.Font = new Font("Arial", 10, FontStyle.Italic);
             lblTitle.TextAlign = ContentAlignment.MiddleCenter;
             lblSubTitle.TextAlign = ContentAlignment.MiddleCenter;
             lblTitle.Left = (pnlTitle.Width - lblTitle.Width) / 2;
             lblSubTitle.Left = (pnlTitle.Width - lblSubTitle.Width) / 2;
+            lblTitle.Top = 10;
+            lblSubTitle.Top = lblTitle.Bottom + 4;
         }
 
         private void CenterNavButtons()
@@ -170,14 +174,14 @@ namespace CollegeLMS
 
         private void ApplyRoundedAll()
         {
-            ApplyRounded(btnView, 8);
-            ApplyRounded(btnAdd, 8);
-            ApplyRounded(btnUpdate, 8);
-            ApplyRounded(btnDelete, 8);
-            ApplyRounded(btnClear, 8);
-            ApplyRounded(btnExport, 8);
-            ApplyRounded(btnPrint, 8);
-            ApplyRounded(btnSearch, 8);
+            ApplyRounded(btnView, 10);
+            ApplyRounded(btnAdd, 10);
+            ApplyRounded(btnUpdate, 10);
+            ApplyRounded(btnDelete, 10);
+            ApplyRounded(btnClear, 10);
+            ApplyRounded(btnExport, 10);
+            ApplyRounded(btnPrint, 10);
+            ApplyRounded(btnSearch, 10);
         }
 
         private void ApplyRounded(Button btn, int radius)
@@ -329,12 +333,12 @@ namespace CollegeLMS
                     adapter.Fill(currentTable);
                     dataGridView1.DataSource = currentTable;
                     UpdateStudentCount();
-                    statusLabel.Text = "? " + currentTable.Rows.Count + " students loaded successfully";
+                    statusLabel.Text = "✅ " + currentTable.Rows.Count + " students loaded successfully";
                 }
             }
             catch (Exception ex)
             {
-                statusLabel.Text = "? Connection Error: " + ex.Message;
+                statusLabel.Text = "❌ Connection Error: " + ex.Message;
                 MessageBox.Show("Database connection failed!\n\n" + ex.Message, "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -400,7 +404,7 @@ namespace CollegeLMS
             }
             catch (Exception ex)
             {
-                statusLabel.Text = "? Search Error: " + ex.Message;
+                statusLabel.Text = "❌ Search Error: " + ex.Message;
             }
         }
 
@@ -438,8 +442,8 @@ namespace CollegeLMS
                     cmd.Parameters.AddWithValue("@Age", txtAge.Text.Trim());
                     cmd.Parameters.AddWithValue("@CourseID", txtCourseID.Text.Trim());
                     cmd.ExecuteNonQuery();
-                    statusLabel.Text = "? Added: " + txtFirstName.Text + " " + txtLastName.Text;
-                    MessageBox.Show("? Student added successfully!\n\n" +
+                    statusLabel.Text = "✅ Added: " + txtFirstName.Text + " " + txtLastName.Text;
+                    MessageBox.Show("✅ Student added successfully!\n\n" +
                         "Name: " + txtFirstName.Text + " " + txtLastName.Text + "\n" +
                         "Course: " + txtCourseID.Text,
                         "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -449,7 +453,7 @@ namespace CollegeLMS
             }
             catch (Exception ex)
             {
-                statusLabel.Text = "? Error: " + ex.Message;
+                statusLabel.Text = "❌ Error: " + ex.Message;
                 MessageBox.Show("Error adding student:\n" + ex.Message, "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -488,8 +492,8 @@ namespace CollegeLMS
                         cmd.Parameters.AddWithValue("@Age", txtAge.Text.Trim());
                         cmd.Parameters.AddWithValue("@CourseID", txtCourseID.Text.Trim());
                         cmd.ExecuteNonQuery();
-                        statusLabel.Text = "? Updated: " + txtFirstName.Text + " " + txtLastName.Text;
-                        MessageBox.Show("? Student updated successfully!\n\n" +
+                        statusLabel.Text = "✅ Updated: " + txtFirstName.Text + " " + txtLastName.Text;
+                        MessageBox.Show("✅ Student updated successfully!\n\n" +
                             "Name: " + txtFirstName.Text + " " + txtLastName.Text,
                             "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         LoadStudents();
@@ -498,7 +502,7 @@ namespace CollegeLMS
                 }
                 catch (Exception ex)
                 {
-                    statusLabel.Text = "? Error: " + ex.Message;
+                    statusLabel.Text = "❌ Error: " + ex.Message;
                     MessageBox.Show("Error updating student:\n" + ex.Message, "Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
@@ -518,7 +522,7 @@ namespace CollegeLMS
             }
 
             DialogResult confirm = MessageBox.Show(
-                "⚠️ Are you sure you want to DELETE:\n\n" +
+                "🗑️ Are you sure you want to DELETE:\n\n" +
                 "Name: " + txtFirstName.Text + " " + txtLastName.Text + "\n" +
                 "ID: " + txtStudentID.Text + "\n" +
                 "Course: " + txtCourseID.Text + "\n\n" +
@@ -544,7 +548,7 @@ namespace CollegeLMS
                 }
                 catch (Exception ex)
                 {
-                    statusLabel.Text = "? Error: " + ex.Message;
+                    statusLabel.Text = "❌ Error: " + ex.Message;
                     MessageBox.Show("Error deleting student:\n" + ex.Message, "Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
@@ -580,8 +584,8 @@ namespace CollegeLMS
                                         row["CourseID"]);
                         }
                     }
-                    statusLabel.Text = "📁 Exported to: " + saveDialog.FileName;
-                    MessageBox.Show("? Students exported successfully!\n\nSaved to:\n" + saveDialog.FileName,
+                    statusLabel.Text = "📤 Exported to: " + saveDialog.FileName;
+                    MessageBox.Show("✅ Students exported successfully!\n\nSaved to:\n" + saveDialog.FileName,
                         "Export Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
@@ -612,7 +616,7 @@ namespace CollegeLMS
                     string[] headers = { "StudentID", "FirstName", "LastName", "Age", "CourseID" };
 
                     // Title
-                    g.DrawString("CTU College � Student List", titleFont, Brushes.DarkBlue, 50, y);
+                    g.DrawString("CTU College Student List", titleFont, Brushes.DarkBlue, 50, y);
                     y += 30;
                     g.DrawString("Printed: " + DateTime.Now.ToString("dd MMM yyyy HH:mm"), dataFont, Brushes.Gray, 50, y);
                     y += 30;
@@ -678,19 +682,27 @@ namespace CollegeLMS
             statusLabel.Text = "🧹 Fields cleared";
         }
 
-                private void ApplyIconText()
+        private void ApplyIconText()
         {
-            if (lblTitle != null) lblTitle.Text = "🎓  Student APP";
-            if (btnView != null) btnView.Text = "🔄 View";
+            if (lblTitle != null) lblTitle.Text = "🎓  Student App";
+            if (btnView != null) btnView.Text = "👁️ View";
             if (btnAdd != null) btnAdd.Text = "➕ Add";
             if (btnUpdate != null) btnUpdate.Text = "✏️ Update";
             if (btnDelete != null) btnDelete.Text = "🗑️ Delete";
             if (btnClear != null) btnClear.Text = "🧹 Clear";
-            if (btnExport != null) btnExport.Text = "📁 Export";
+            if (btnExport != null) btnExport.Text = "📤 Export";
             if (btnPrint != null) btnPrint.Text = "🖨️ Print";
             if (btnSearch != null) btnSearch.Text = "🔍 Search";
             if (lblSearch != null) lblSearch.Text = "🔍 Search:";
             if (lblCount != null) lblCount.Text = "👥 Total Students: 0";
+        }
+
+        private void PolishStatusBar()
+        {
+            if (statusLabel == null) return;
+            statusLabel.AutoSize = false;
+            statusLabel.TextAlign = ContentAlignment.MiddleLeft;
+            statusLabel.Padding = new Padding(8, 0, 0, 0);
         }
 
         private void ClearFields()
@@ -738,6 +750,7 @@ namespace CollegeLMS
         }
     }
 }
+
 
 
 
