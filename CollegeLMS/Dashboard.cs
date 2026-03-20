@@ -291,7 +291,7 @@ namespace CollegeLMS
         {
             try
             {
-                string localFile = ResolveLocalBackgroundPath("6916121.jpg");
+                string localFile = ResolveLocalBackgroundPath("tp244-bg1-01.jpg");
                 Image img;
 
                 if (!string.IsNullOrEmpty(localFile) && File.Exists(localFile))
