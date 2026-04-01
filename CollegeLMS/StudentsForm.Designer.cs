@@ -8,7 +8,7 @@
 // Institution: CTU Training Solutions
 // Date:        12 February 2026
 //
-// © 2026 Nicolette Mashaba. All rights reserved.
+// ï¿½ 2026 Nicolette Mashaba. All rights reserved.
 // This code is the intellectual property of Nicolette Mashaba.
 // Unauthorized copying, sharing, reuse, or redistribution of
 // this code, in whole or in part, is strictly prohibited
@@ -66,6 +66,8 @@ namespace CollegeLMS
             this.pnlStatus = new System.Windows.Forms.Panel();
             this.pnlLeft = new System.Windows.Forms.Panel();
             this.statusLabel = new System.Windows.Forms.Label();
+            this.pnlFooter = new System.Windows.Forms.Panel();
+            this.lblFooterText = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.pnlTitle.SuspendLayout();
             this.pnlNav.SuspendLayout();
@@ -100,7 +102,7 @@ namespace CollegeLMS
             this.lblTitle.BackColor = System.Drawing.Color.Transparent;
 
             // -- SubTitle Label --
-            this.lblSubTitle.Text = "College Learner Management System  —  CTUCollegeDB";
+            this.lblSubTitle.Text = "College Learner Management System  ï¿½  CTUCollegeDB";
             this.lblSubTitle.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Italic);
             this.lblSubTitle.ForeColor = System.Drawing.Color.FromArgb(140, 204, 235);
             this.lblSubTitle.Location = new System.Drawing.Point(390, 58);
@@ -399,6 +401,28 @@ namespace CollegeLMS
             this.pnlStatus.Name = "pnlStatus";
             this.pnlStatus.Controls.Add(this.statusLabel);
 
+            // Footer Panel
+            this.pnlFooter.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlFooter.Height = 40;
+            this.pnlFooter.BackColor = System.Drawing.Color.FromArgb(20, 63, 120);
+            this.pnlFooter.Controls.Add(this.lblFooterText);
+            this.pnlFooter.Paint += (s, e) => {
+                var brush = new System.Drawing.Drawing2D.LinearGradientBrush(
+                    this.pnlFooter.ClientRectangle,
+                    System.Drawing.Color.FromArgb(31, 84, 147),
+                    System.Drawing.Color.FromArgb(15, 52, 112),
+                    System.Drawing.Drawing2D.LinearGradientMode.Vertical);
+                e.Graphics.FillRectangle(brush, this.pnlFooter.ClientRectangle);
+                e.Graphics.DrawLine(new System.Drawing.Pen(System.Drawing.Color.FromArgb(140, 204, 235), 1), 0, 0, this.pnlFooter.Width, 0);
+            };
+
+            // Footer Label
+            this.lblFooterText.Font = new System.Drawing.Font("Arial", 10, System.Drawing.FontStyle.Bold);
+            this.lblFooterText.ForeColor = System.Drawing.Color.White;
+            this.lblFooterText.BackColor = System.Drawing.Color.Transparent;
+            this.lblFooterText.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblFooterText.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+
             this.statusLabel.Text = "Ready";
             this.statusLabel.Font = new System.Drawing.Font("Arial", 9);
             this.statusLabel.ForeColor = System.Drawing.Color.White;
@@ -442,6 +466,7 @@ namespace CollegeLMS
             this.Controls.Add(this.txtSearch);
             this.Controls.Add(this.btnSearch);
             this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.pnlFooter);
 
             this.pnlTitle.ResumeLayout(false);
             this.pnlNav.ResumeLayout(false);
@@ -488,10 +513,7 @@ namespace CollegeLMS
         private System.Windows.Forms.Panel pnlStatus;
         private System.Windows.Forms.Panel pnlLeft;
         private System.Windows.Forms.Label statusLabel;
+        private System.Windows.Forms.Panel pnlFooter;
+        private System.Windows.Forms.Label lblFooterText;
     }
 }
-
-
-
-
-

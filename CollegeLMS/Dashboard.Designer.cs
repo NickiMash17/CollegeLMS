@@ -1,4 +1,4 @@
-﻿// ============================================================
+﻿﻿// ============================================================
 // COPYRIGHT NOTICE
 // ============================================================
 // Project:     College Learner Management System (CollegeLMS)
@@ -41,6 +41,8 @@ namespace CollegeLMS
             this.btnLecturers = new System.Windows.Forms.Button();
             this.pnlStatus = new System.Windows.Forms.Panel();
             this.lblStatus = new System.Windows.Forms.Label();
+            this.pnlFooter = new System.Windows.Forms.Panel();
+            this.lblFooterText = new System.Windows.Forms.Label();
             this.pnlTitle.SuspendLayout();
             this.pnlNav.SuspendLayout();
             this.pnlStatus.SuspendLayout();
@@ -255,6 +257,28 @@ namespace CollegeLMS
             this.pnlStatus.Size = new System.Drawing.Size(1000, 32);
             this.pnlStatus.Controls.Add(this.lblStatus);
 
+            // Footer Panel
+            this.pnlFooter.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlFooter.Height = 40;
+            this.pnlFooter.BackColor = System.Drawing.Color.FromArgb(20, 63, 120);
+            this.pnlFooter.Controls.Add(this.lblFooterText);
+            this.pnlFooter.Paint += (s, e) => {
+                var brush = new System.Drawing.Drawing2D.LinearGradientBrush(
+                    this.pnlFooter.ClientRectangle,
+                    System.Drawing.Color.FromArgb(31, 84, 147),
+                    System.Drawing.Color.FromArgb(15, 52, 112),
+                    System.Drawing.Drawing2D.LinearGradientMode.Vertical);
+                e.Graphics.FillRectangle(brush, this.pnlFooter.ClientRectangle);
+                e.Graphics.DrawLine(new System.Drawing.Pen(System.Drawing.Color.FromArgb(140, 204, 235), 1), 0, 0, this.pnlFooter.Width, 0);
+            };
+
+            // Footer Label
+            this.lblFooterText.Font = new System.Drawing.Font("Arial", 10, System.Drawing.FontStyle.Bold);
+            this.lblFooterText.ForeColor = System.Drawing.Color.White;
+            this.lblFooterText.BackColor = System.Drawing.Color.Transparent;
+            this.lblFooterText.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblFooterText.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+
             this.lblStatus.Text = "✅ Welcome to College LMS : CTUCollegeDB";
             this.lblStatus.Font = new System.Drawing.Font("Arial", 9);
             this.lblStatus.ForeColor = System.Drawing.Color.White;
@@ -280,6 +304,7 @@ namespace CollegeLMS
             this.Controls.Add(this.btnModules);
             this.Controls.Add(this.btnLecturers);
             this.Controls.Add(this.pnlStatus);
+            this.Controls.Add(this.pnlFooter);
 
             this.pnlTitle.ResumeLayout(false);
             this.pnlNav.ResumeLayout(false);
@@ -307,5 +332,7 @@ namespace CollegeLMS
         private System.Windows.Forms.Button btnDepartments;
         private System.Windows.Forms.Button btnModules;
         private System.Windows.Forms.Button btnLecturers;
+        private System.Windows.Forms.Panel pnlFooter;
+        private System.Windows.Forms.Label lblFooterText;
     }
 }

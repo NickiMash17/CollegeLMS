@@ -54,6 +54,9 @@ namespace CollegeLMS
             if (pnlNav != null) pnlNav.Paint += NavBar_Paint;
             activeNavButton = btnNavDashboard;
 
+            if (lblFooterText != null) 
+                lblFooterText.Text = "© 2026 Nicolette Mashaba  •  Created with ❤️ by Nicolette Mashaba";
+
             TrySetBackgroundImage();
         }
 

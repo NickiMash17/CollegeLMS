@@ -84,6 +84,9 @@ namespace CollegeLMS
             ApplyRoundedAll();
             if (pnlNav != null) pnlNav.Paint += NavBar_Paint;
             PolishStatusBar();
+
+            if (lblFooterText != null) 
+                lblFooterText.Text = "© 2026 Nicolette Mashaba  •  Created with ❤️ by Nicolette Mashaba";
         }
 
         private void CenterHeader()
@@ -464,7 +467,3 @@ namespace CollegeLMS
 
     }
 }
-
-
-
-
