@@ -19,9 +19,6 @@ namespace CollegeLMS
 {
     public partial class DepartmentsForm : Form
     {
-        string connectionString =
-            "Server=HACKER17\\SQLEXPRESS;Database=CTUCollegeDB;Trusted_Connection=True;Encrypt=False;TrustServerCertificate=True;";
-
         DataTable currentTable = new DataTable();
         private bool navOffsetApplied = false;
         private readonly Dictionary<Button, Point> buttonPositions = new Dictionary<Button, Point>();
@@ -270,7 +267,7 @@ namespace CollegeLMS
         {
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
                 {
                     conn.Open();
                     SqlDataAdapter adapter = new SqlDataAdapter("SELECT DepartmentID, DepartmentName, Building FROM Department ORDER BY DepartmentID", conn);
@@ -300,7 +297,10 @@ namespace CollegeLMS
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            if (txtDepartmentName.Text == "")
+            string departmentName = txtDepartmentName.Text.Trim();
+            string building = txtBuilding.Text.Trim();
+
+            if (departmentName == "")
             {
                 MessageBox.Show("Please fill in Department Name!", "Validation Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -308,13 +308,13 @@ namespace CollegeLMS
             }
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
                 {
                     conn.Open();
                     string query = "INSERT INTO Department (DepartmentName, Building) VALUES (@DepartmentName, @Building)";
                     SqlCommand cmd = new SqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@DepartmentName", txtDepartmentName.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Building", txtBuilding.Text.Trim());
+                    cmd.Parameters.AddWithValue("@DepartmentName", departmentName);
+                    cmd.Parameters.AddWithValue("@Building", building);
                     cmd.ExecuteNonQuery();
                     MessageBox.Show("? Department added!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadDepartments();
@@ -329,21 +329,38 @@ namespace CollegeLMS
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            if (txtDepartmentID.Text == "")
+            string departmentIdText = txtDepartmentID.Text.Trim();
+            string departmentName = txtDepartmentName.Text.Trim();
+            string building = txtBuilding.Text.Trim();
+
+            if (departmentIdText == "")
             {
                 MessageBox.Show("Select a department first!", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
+            if (!int.TryParse(departmentIdText, out int departmentId))
+            {
+                MessageBox.Show("Invalid Department ID selected.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (departmentName == "")
+            {
+                MessageBox.Show("Please fill in Department Name!", "Validation Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
                 {
                     conn.Open();
                     string query = "UPDATE Department SET DepartmentName=@DepartmentName, Building=@Building WHERE DepartmentID=@DepartmentID";
                     SqlCommand cmd = new SqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@DepartmentID", txtDepartmentID.Text);
-                    cmd.Parameters.AddWithValue("@DepartmentName", txtDepartmentName.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Building", txtBuilding.Text.Trim());
+                    cmd.Parameters.AddWithValue("@DepartmentID", departmentId);
+                    cmd.Parameters.AddWithValue("@DepartmentName", departmentName);
+                    cmd.Parameters.AddWithValue("@Building", building);
                     cmd.ExecuteNonQuery();
                     MessageBox.Show("? Department updated!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadDepartments();
@@ -358,9 +375,17 @@ namespace CollegeLMS
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (txtDepartmentID.Text == "")
+            string departmentIdText = txtDepartmentID.Text.Trim();
+
+            if (departmentIdText == "")
             {
                 MessageBox.Show("Select a department first!", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!int.TryParse(departmentIdText, out int departmentId))
+            {
+                MessageBox.Show("Invalid Department ID selected.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             if (MessageBox.Show("Delete department: " + txtDepartmentName.Text + "?", "Confirm",
@@ -368,11 +393,11 @@ namespace CollegeLMS
             {
                 try
                 {
-                    using (SqlConnection conn = new SqlConnection(connectionString))
+                    using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
                     {
                         conn.Open();
                         SqlCommand cmd = new SqlCommand("DELETE FROM Department WHERE DepartmentID=@DepartmentID", conn);
-                        cmd.Parameters.AddWithValue("@DepartmentID", txtDepartmentID.Text);
+                        cmd.Parameters.AddWithValue("@DepartmentID", departmentId);
                         cmd.ExecuteNonQuery();
                         MessageBox.Show("🗑️ Department deleted!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         LoadDepartments();

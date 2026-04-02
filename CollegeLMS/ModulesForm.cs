@@ -19,9 +19,6 @@ namespace CollegeLMS
 {
     public partial class ModulesForm : Form
     {
-        string connectionString =
-            "Server=HACKER17\\SQLEXPRESS;Database=CTUCollegeDB;Trusted_Connection=True;Encrypt=False;TrustServerCertificate=True;";
-
         DataTable currentTable = new DataTable();
         private bool navOffsetApplied = false;
         private readonly Dictionary<Button, Point> buttonPositions = new Dictionary<Button, Point>();
@@ -270,7 +267,7 @@ namespace CollegeLMS
         {
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
                 {
                     conn.Open();
                     SqlDataAdapter adapter = new SqlDataAdapter("SELECT ModuleID, ModuleName, CourseID, Credits FROM Module ORDER BY ModuleID", conn);
@@ -301,22 +298,40 @@ namespace CollegeLMS
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            if (txtModuleName.Text == "")
+            string moduleName = txtModuleName.Text.Trim();
+            string courseId = txtCourseID.Text.Trim();
+            string creditsText = txtCredits.Text.Trim();
+
+            if (moduleName == "")
             {
                 MessageBox.Show("Please fill in Module Name!", "Validation Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
+            if (courseId == "")
+            {
+                MessageBox.Show("Please enter Course ID!", "Validation Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!int.TryParse(creditsText, out int credits) || credits < 0 || credits > 60)
+            {
+                MessageBox.Show("Please enter valid Credits (0 - 60).", "Validation Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
                 {
                     conn.Open();
                     string query = "INSERT INTO Module (ModuleName, CourseID, Credits) VALUES (@ModuleName, @CourseID, @Credits)";
                     SqlCommand cmd = new SqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@ModuleName", txtModuleName.Text.Trim());
-                    cmd.Parameters.AddWithValue("@CourseID", txtCourseID.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Credits", txtCredits.Text.Trim());
+                    cmd.Parameters.AddWithValue("@ModuleName", moduleName);
+                    cmd.Parameters.AddWithValue("@CourseID", courseId);
+                    cmd.Parameters.AddWithValue("@Credits", credits);
                     cmd.ExecuteNonQuery();
                     MessageBox.Show("✅ Module added!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadModules();
@@ -331,22 +346,54 @@ namespace CollegeLMS
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            if (txtModuleID.Text == "")
+            string moduleIdText = txtModuleID.Text.Trim();
+            string moduleName = txtModuleName.Text.Trim();
+            string courseId = txtCourseID.Text.Trim();
+            string creditsText = txtCredits.Text.Trim();
+
+            if (moduleIdText == "")
             {
                 MessageBox.Show("Select a module first!", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
+            if (!int.TryParse(moduleIdText, out int moduleId))
+            {
+                MessageBox.Show("Invalid Module ID selected.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (moduleName == "")
+            {
+                MessageBox.Show("Please fill in Module Name!", "Validation Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (courseId == "")
+            {
+                MessageBox.Show("Please enter Course ID!", "Validation Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!int.TryParse(creditsText, out int credits) || credits < 0 || credits > 60)
+            {
+                MessageBox.Show("Please enter valid Credits (0 - 60).", "Validation Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
                 {
                     conn.Open();
                     string query = "UPDATE Module SET ModuleName=@ModuleName, CourseID=@CourseID, Credits=@Credits WHERE ModuleID=@ModuleID";
                     SqlCommand cmd = new SqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@ModuleID", txtModuleID.Text);
-                    cmd.Parameters.AddWithValue("@ModuleName", txtModuleName.Text.Trim());
-                    cmd.Parameters.AddWithValue("@CourseID", txtCourseID.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Credits", txtCredits.Text.Trim());
+                    cmd.Parameters.AddWithValue("@ModuleID", moduleId);
+                    cmd.Parameters.AddWithValue("@ModuleName", moduleName);
+                    cmd.Parameters.AddWithValue("@CourseID", courseId);
+                    cmd.Parameters.AddWithValue("@Credits", credits);
                     cmd.ExecuteNonQuery();
                     MessageBox.Show("✅ Module updated!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadModules();
@@ -361,9 +408,17 @@ namespace CollegeLMS
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (txtModuleID.Text == "")
+            string moduleIdText = txtModuleID.Text.Trim();
+
+            if (moduleIdText == "")
             {
                 MessageBox.Show("Select a module first!", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!int.TryParse(moduleIdText, out int moduleId))
+            {
+                MessageBox.Show("Invalid Module ID selected.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             if (MessageBox.Show("Delete module: " + txtModuleName.Text + "?", "Confirm",
@@ -371,11 +426,11 @@ namespace CollegeLMS
             {
                 try
                 {
-                    using (SqlConnection conn = new SqlConnection(connectionString))
+                    using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
                     {
                         conn.Open();
                         SqlCommand cmd = new SqlCommand("DELETE FROM Module WHERE ModuleID=@ModuleID", conn);
-                        cmd.Parameters.AddWithValue("@ModuleID", txtModuleID.Text);
+                        cmd.Parameters.AddWithValue("@ModuleID", moduleId);
                         cmd.ExecuteNonQuery();
                         MessageBox.Show("🗑️ Module deleted!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         LoadModules();

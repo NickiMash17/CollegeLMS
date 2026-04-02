@@ -19,9 +19,6 @@ namespace CollegeLMS
 {
     public partial class LecturersForm : Form
     {
-        string connectionString =
-            "Server=HACKER17\\SQLEXPRESS;Database=CTUCollegeDB;Trusted_Connection=True;Encrypt=False;TrustServerCertificate=True;";
-
         DataTable currentTable = new DataTable();
         private bool navOffsetApplied = false;
         private readonly Dictionary<Button, Point> buttonPositions = new Dictionary<Button, Point>();
@@ -273,7 +270,7 @@ namespace CollegeLMS
         {
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
                 {
                     conn.Open();
                     SqlDataAdapter adapter = new SqlDataAdapter("SELECT LecturerID, FirstName, LastName, Salary, DepartmentName FROM Lecturer ORDER BY LecturerID", conn);
@@ -305,23 +302,42 @@ namespace CollegeLMS
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            if (txtFirstName.Text == "" || txtLastName.Text == "")
+            string firstName = txtFirstName.Text.Trim();
+            string lastName = txtLastName.Text.Trim();
+            string departmentName = txtDepartmentName.Text.Trim();
+            string salaryText = txtSalary.Text.Trim();
+
+            if (firstName == "" || lastName == "")
             {
                 MessageBox.Show("Please fill in First Name and Last Name!", "Validation Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
+            if (departmentName == "")
+            {
+                MessageBox.Show("Please enter Department Name!", "Validation Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!decimal.TryParse(salaryText, out decimal salary) || salary < 0)
+            {
+                MessageBox.Show("Please enter a valid Salary (0 or higher).", "Validation Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
                 {
                     conn.Open();
                     string query = "INSERT INTO Lecturer (FirstName, LastName, Salary, DepartmentName) VALUES (@FirstName, @LastName, @Salary, @DepartmentName)";
                     SqlCommand cmd = new SqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@FirstName", txtFirstName.Text.Trim());
-                    cmd.Parameters.AddWithValue("@LastName", txtLastName.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Salary", txtSalary.Text.Trim());
-                    cmd.Parameters.AddWithValue("@DepartmentName", txtDepartmentName.Text.Trim());
+                    cmd.Parameters.AddWithValue("@FirstName", firstName);
+                    cmd.Parameters.AddWithValue("@LastName", lastName);
+                    cmd.Parameters.AddWithValue("@Salary", salary);
+                    cmd.Parameters.AddWithValue("@DepartmentName", departmentName);
                     cmd.ExecuteNonQuery();
                     MessageBox.Show("? Lecturer added!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadLecturers();
@@ -336,23 +352,56 @@ namespace CollegeLMS
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            if (txtLecturerID.Text == "")
+            string lecturerIdText = txtLecturerID.Text.Trim();
+            string firstName = txtFirstName.Text.Trim();
+            string lastName = txtLastName.Text.Trim();
+            string departmentName = txtDepartmentName.Text.Trim();
+            string salaryText = txtSalary.Text.Trim();
+
+            if (lecturerIdText == "")
             {
                 MessageBox.Show("Select a lecturer first!", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
+            if (!int.TryParse(lecturerIdText, out int lecturerId))
+            {
+                MessageBox.Show("Invalid Lecturer ID selected.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (firstName == "" || lastName == "")
+            {
+                MessageBox.Show("Please fill in First Name and Last Name!", "Validation Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (departmentName == "")
+            {
+                MessageBox.Show("Please enter Department Name!", "Validation Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!decimal.TryParse(salaryText, out decimal salary) || salary < 0)
+            {
+                MessageBox.Show("Please enter a valid Salary (0 or higher).", "Validation Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
                 {
                     conn.Open();
                     string query = "UPDATE Lecturer SET FirstName=@FirstName, LastName=@LastName, Salary=@Salary, DepartmentName=@DepartmentName WHERE LecturerID=@LecturerID";
                     SqlCommand cmd = new SqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@LecturerID", txtLecturerID.Text);
-                    cmd.Parameters.AddWithValue("@FirstName", txtFirstName.Text.Trim());
-                    cmd.Parameters.AddWithValue("@LastName", txtLastName.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Salary", txtSalary.Text.Trim());
-                    cmd.Parameters.AddWithValue("@DepartmentName", txtDepartmentName.Text.Trim());
+                    cmd.Parameters.AddWithValue("@LecturerID", lecturerId);
+                    cmd.Parameters.AddWithValue("@FirstName", firstName);
+                    cmd.Parameters.AddWithValue("@LastName", lastName);
+                    cmd.Parameters.AddWithValue("@Salary", salary);
+                    cmd.Parameters.AddWithValue("@DepartmentName", departmentName);
                     cmd.ExecuteNonQuery();
                     MessageBox.Show("? Lecturer updated!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadLecturers();
@@ -367,9 +416,17 @@ namespace CollegeLMS
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (txtLecturerID.Text == "")
+            string lecturerIdText = txtLecturerID.Text.Trim();
+
+            if (lecturerIdText == "")
             {
                 MessageBox.Show("Select a lecturer first!", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!int.TryParse(lecturerIdText, out int lecturerId))
+            {
+                MessageBox.Show("Invalid Lecturer ID selected.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             if (MessageBox.Show("Delete lecturer: " + txtFirstName.Text + " " + txtLastName.Text + "?", "Confirm",
@@ -377,11 +434,11 @@ namespace CollegeLMS
             {
                 try
                 {
-                    using (SqlConnection conn = new SqlConnection(connectionString))
+                    using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
                     {
                         conn.Open();
                         SqlCommand cmd = new SqlCommand("DELETE FROM Lecturer WHERE LecturerID=@LecturerID", conn);
-                        cmd.Parameters.AddWithValue("@LecturerID", txtLecturerID.Text);
+                        cmd.Parameters.AddWithValue("@LecturerID", lecturerId);
                         cmd.ExecuteNonQuery();
                         MessageBox.Show("🗑️ Lecturer deleted!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         LoadLecturers();

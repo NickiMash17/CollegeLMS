@@ -24,9 +24,6 @@ namespace CollegeLMS
 {
     public partial class CoursesForm : Form
     {
-        string connectionString =
-            "Server=HACKER17\\SQLEXPRESS;Database=CTUCollegeDB;Trusted_Connection=True;Encrypt=False;TrustServerCertificate=True;";
-
         DataTable currentTable = new DataTable();
         private bool navOffsetApplied = false;
         private readonly Dictionary<Button, Point> buttonPositions = new Dictionary<Button, Point>();
@@ -278,7 +275,7 @@ namespace CollegeLMS
         {
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
                 {
                     conn.Open();
                     SqlDataAdapter adapter = new SqlDataAdapter("SELECT CourseID, CourseName, DepartmentID, DurationYears FROM Course ORDER BY CourseID", conn);
@@ -309,23 +306,42 @@ namespace CollegeLMS
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            if (txtCourseName.Text == "" || txtCourseID.Text == "")
+            string courseId = txtCourseID.Text.Trim();
+            string courseName = txtCourseName.Text.Trim();
+            string departmentId = txtDepartmentID.Text.Trim();
+            string durationText = txtDurationYears.Text.Trim();
+
+            if (courseId == "" || courseName == "")
             {
                 MessageBox.Show("Please fill in Course ID and Course Name!", "Validation Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
+            if (departmentId == "")
+            {
+                MessageBox.Show("Please enter Department ID!", "Validation Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!int.TryParse(durationText, out int durationYears) || durationYears < 1 || durationYears > 10)
+            {
+                MessageBox.Show("Please enter a valid Duration Years (1 - 10).", "Validation Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
                 {
                     conn.Open();
                     string query = "INSERT INTO Course (CourseID, CourseName, DepartmentID, DurationYears) VALUES (@CourseID, @CourseName, @DepartmentID, @DurationYears)";
                     SqlCommand cmd = new SqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@CourseID", txtCourseID.Text.Trim());
-                    cmd.Parameters.AddWithValue("@CourseName", txtCourseName.Text.Trim());
-                    cmd.Parameters.AddWithValue("@DepartmentID", txtDepartmentID.Text.Trim());
-                    cmd.Parameters.AddWithValue("@DurationYears", txtDurationYears.Text.Trim());
+                    cmd.Parameters.AddWithValue("@CourseID", courseId);
+                    cmd.Parameters.AddWithValue("@CourseName", courseName);
+                    cmd.Parameters.AddWithValue("@DepartmentID", departmentId);
+                    cmd.Parameters.AddWithValue("@DurationYears", durationYears);
                     cmd.ExecuteNonQuery();
                     MessageBox.Show("✅ Course added successfully!", "Success",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -342,22 +358,48 @@ namespace CollegeLMS
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            if (txtCourseID.Text == "")
+            string courseId = txtCourseID.Text.Trim();
+            string courseName = txtCourseName.Text.Trim();
+            string departmentId = txtDepartmentID.Text.Trim();
+            string durationText = txtDurationYears.Text.Trim();
+
+            if (courseId == "")
             {
                 MessageBox.Show("Select a course first!", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
+            if (courseName == "")
+            {
+                MessageBox.Show("Please enter Course Name!", "Validation Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (departmentId == "")
+            {
+                MessageBox.Show("Please enter Department ID!", "Validation Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!int.TryParse(durationText, out int durationYears) || durationYears < 1 || durationYears > 10)
+            {
+                MessageBox.Show("Please enter a valid Duration Years (1 - 10).", "Validation Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
                 {
                     conn.Open();
                     string query = "UPDATE Course SET CourseName=@CourseName, DepartmentID=@DepartmentID, DurationYears=@DurationYears WHERE CourseID=@CourseID";
                     SqlCommand cmd = new SqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@CourseID", txtCourseID.Text);
-                    cmd.Parameters.AddWithValue("@CourseName", txtCourseName.Text.Trim());
-                    cmd.Parameters.AddWithValue("@DepartmentID", txtDepartmentID.Text.Trim());
-                    cmd.Parameters.AddWithValue("@DurationYears", txtDurationYears.Text.Trim());
+                    cmd.Parameters.AddWithValue("@CourseID", courseId);
+                    cmd.Parameters.AddWithValue("@CourseName", courseName);
+                    cmd.Parameters.AddWithValue("@DepartmentID", departmentId);
+                    cmd.Parameters.AddWithValue("@DurationYears", durationYears);
                     cmd.ExecuteNonQuery();
                     MessageBox.Show("✅ Course updated!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadCourses();
@@ -372,7 +414,8 @@ namespace CollegeLMS
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (txtCourseID.Text == "")
+            string courseId = txtCourseID.Text.Trim();
+            if (courseId == "")
             {
                 MessageBox.Show("Select a course first!", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -382,11 +425,11 @@ namespace CollegeLMS
             {
                 try
                 {
-                    using (SqlConnection conn = new SqlConnection(connectionString))
+                    using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
                     {
                         conn.Open();
                         SqlCommand cmd = new SqlCommand("DELETE FROM Course WHERE CourseID=@CourseID", conn);
-                        cmd.Parameters.AddWithValue("@CourseID", txtCourseID.Text);
+                        cmd.Parameters.AddWithValue("@CourseID", courseId);
                         cmd.ExecuteNonQuery();
                         MessageBox.Show("🗑️ Course deleted!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         LoadCourses();

@@ -31,9 +31,6 @@ namespace CollegeLMS
 {
     public partial class StudentsForm : Form
     {
-        string connectionString =
-            "Server=HACKER17\\SQLEXPRESS;Database=CTUCollegeDB;Trusted_Connection=True;Encrypt=False;TrustServerCertificate=True;";
-
         DataTable currentTable = new DataTable();
         private bool navOffsetApplied = false;
         private readonly Dictionary<Button, Point> buttonPositions = new Dictionary<Button, Point>();
@@ -327,7 +324,7 @@ namespace CollegeLMS
         {
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
                 {
                     conn.Open();
                     string query = "SELECT StudentID, FirstName, LastName, Age, CourseID FROM Student ORDER BY StudentID";
@@ -388,7 +385,7 @@ namespace CollegeLMS
 
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
                 {
                     conn.Open();
                     string query = @"SELECT StudentID, FirstName, LastName, Age, CourseID
@@ -426,24 +423,43 @@ namespace CollegeLMS
         // =====================
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            if (txtFirstName.Text == "" || txtLastName.Text == "")
+            string firstName = txtFirstName.Text.Trim();
+            string lastName = txtLastName.Text.Trim();
+            string courseId = txtCourseID.Text.Trim();
+            string ageText = txtAge.Text.Trim();
+
+            if (firstName == "" || lastName == "")
             {
                 MessageBox.Show("Please fill in First Name and Last Name!", "Validation Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
+            if (courseId == "")
+            {
+                MessageBox.Show("Please enter Course ID!", "Validation Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!int.TryParse(ageText, out int age) || age < 1 || age > 120)
+            {
+                MessageBox.Show("Please enter a valid Age (1 - 120).", "Validation Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
                 {
                     conn.Open();
                     string query = "INSERT INTO Student (FirstName, LastName, Age, CourseID) VALUES (@FirstName, @LastName, @Age, @CourseID)";
                     SqlCommand cmd = new SqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@FirstName", txtFirstName.Text.Trim());
-                    cmd.Parameters.AddWithValue("@LastName", txtLastName.Text.Trim());
-                    cmd.Parameters.AddWithValue("@Age", txtAge.Text.Trim());
-                    cmd.Parameters.AddWithValue("@CourseID", txtCourseID.Text.Trim());
+                    cmd.Parameters.AddWithValue("@FirstName", firstName);
+                    cmd.Parameters.AddWithValue("@LastName", lastName);
+                    cmd.Parameters.AddWithValue("@Age", age);
+                    cmd.Parameters.AddWithValue("@CourseID", courseId);
                     cmd.ExecuteNonQuery();
                     statusLabel.Text = "✅ Added: " + txtFirstName.Text + " " + txtLastName.Text;
                     MessageBox.Show("✅ Student added successfully!\n\n" +
@@ -467,9 +483,43 @@ namespace CollegeLMS
         // =====================
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            if (txtStudentID.Text == "")
+            string studentIdText = txtStudentID.Text.Trim();
+            string firstName = txtFirstName.Text.Trim();
+            string lastName = txtLastName.Text.Trim();
+            string courseId = txtCourseID.Text.Trim();
+            string ageText = txtAge.Text.Trim();
+
+            if (studentIdText == "")
             {
                 MessageBox.Show("Please select a student from the table first!", "Validation Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!int.TryParse(studentIdText, out int studentId))
+            {
+                MessageBox.Show("Invalid Student ID selected.", "Validation Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (firstName == "" || lastName == "")
+            {
+                MessageBox.Show("Please fill in First Name and Last Name!", "Validation Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (courseId == "")
+            {
+                MessageBox.Show("Please enter Course ID!", "Validation Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!int.TryParse(ageText, out int age) || age < 1 || age > 120)
+            {
+                MessageBox.Show("Please enter a valid Age (1 - 120).", "Validation Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -484,16 +534,16 @@ namespace CollegeLMS
             {
                 try
                 {
-                    using (SqlConnection conn = new SqlConnection(connectionString))
+                    using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
                     {
                         conn.Open();
                         string query = "UPDATE Student SET FirstName=@FirstName, LastName=@LastName, Age=@Age, CourseID=@CourseID WHERE StudentID=@StudentID";
                         SqlCommand cmd = new SqlCommand(query, conn);
-                        cmd.Parameters.AddWithValue("@StudentID", txtStudentID.Text);
-                        cmd.Parameters.AddWithValue("@FirstName", txtFirstName.Text.Trim());
-                        cmd.Parameters.AddWithValue("@LastName", txtLastName.Text.Trim());
-                        cmd.Parameters.AddWithValue("@Age", txtAge.Text.Trim());
-                        cmd.Parameters.AddWithValue("@CourseID", txtCourseID.Text.Trim());
+                        cmd.Parameters.AddWithValue("@StudentID", studentId);
+                        cmd.Parameters.AddWithValue("@FirstName", firstName);
+                        cmd.Parameters.AddWithValue("@LastName", lastName);
+                        cmd.Parameters.AddWithValue("@Age", age);
+                        cmd.Parameters.AddWithValue("@CourseID", courseId);
                         cmd.ExecuteNonQuery();
                         statusLabel.Text = "✅ Updated: " + txtFirstName.Text + " " + txtLastName.Text;
                         MessageBox.Show("✅ Student updated successfully!\n\n" +
@@ -517,9 +567,18 @@ namespace CollegeLMS
         // =====================
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (txtStudentID.Text == "")
+            string studentIdText = txtStudentID.Text.Trim();
+
+            if (studentIdText == "")
             {
                 MessageBox.Show("Please select a student from the table first!", "Validation Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!int.TryParse(studentIdText, out int studentId))
+            {
+                MessageBox.Show("Invalid Student ID selected.", "Validation Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -536,11 +595,11 @@ namespace CollegeLMS
             {
                 try
                 {
-                    using (SqlConnection conn = new SqlConnection(connectionString))
+                    using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
                     {
                         conn.Open();
                         SqlCommand cmd = new SqlCommand("DELETE FROM Student WHERE StudentID=@StudentID", conn);
-                        cmd.Parameters.AddWithValue("@StudentID", txtStudentID.Text);
+                        cmd.Parameters.AddWithValue("@StudentID", studentId);
                         cmd.ExecuteNonQuery();
                         statusLabel.Text = "🗑️ Deleted: " + txtFirstName.Text + " " + txtLastName.Text;
                         MessageBox.Show("🗑️ Student deleted successfully!", "Deleted",
@@ -659,6 +718,7 @@ namespace CollegeLMS
                     // Footer
                     g.DrawLine(Pens.SteelBlue, 50, y + 5, 700, y + 5);
                     g.DrawString("Total Students: " + currentTable.Rows.Count, headerFont, Brushes.DarkBlue, 50, y + 10);
+
                 };
 
                 PrintPreviewDialog preview = new PrintPreviewDialog();

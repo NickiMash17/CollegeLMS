@@ -11,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Net;
 using System.Windows.Forms;
 
 namespace CollegeLMS
@@ -295,23 +294,13 @@ namespace CollegeLMS
             try
             {
                 string localFile = ResolveLocalBackgroundPath("tp244-bg1-01.jpg");
-                Image img;
+                if (string.IsNullOrEmpty(localFile) || !File.Exists(localFile)) return;
 
-                if (!string.IsNullOrEmpty(localFile) && File.Exists(localFile))
+                Image img;
+                using (FileStream fs = File.OpenRead(localFile))
+                using (Image temp = Image.FromStream(fs))
                 {
-                    img = Image.FromFile(localFile);
-                }
-                else
-                {
-                    string url = "https://cdn.pixabay.com/photo/2016/01/16/01/00/blue-1142745_1280.jpg";
-                    using (WebClient client = new WebClient())
-                    {
-                        byte[] data = client.DownloadData(url);
-                        using (MemoryStream ms = new MemoryStream(data))
-                        {
-                            img = Image.FromStream(ms);
-                        }
-                    }
+                    img = new Bitmap(temp);
                 }
 
                 if (bgPicture != null)
@@ -335,6 +324,9 @@ namespace CollegeLMS
             try
             {
                 string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                string candidate0 = Path.GetFullPath(Path.Combine(baseDir, fileName));
+                if (File.Exists(candidate0)) return candidate0;
+
                 string candidate1 = Path.GetFullPath(Path.Combine(baseDir, "..", "..", fileName));
                 if (File.Exists(candidate1)) return candidate1;
 
