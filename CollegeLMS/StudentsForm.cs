@@ -620,10 +620,25 @@ namespace CollegeLMS
         // =====================
         // EXPORT TO CSV
         // =====================
+        private static string EscapeCsv(object value)
+        {
+            string text = value?.ToString() ?? "";
+            if (text.Contains("\"")) text = text.Replace("\"", "\"\"");
+            if (text.IndexOfAny(new[] { ',', '"', '\r', '\n' }) >= 0) text = "\"" + text + "\"";
+            return text;
+        }
+
         private void btnExport_Click(object sender, EventArgs e)
         {
             try
             {
+                if (currentTable == null || currentTable.Rows.Count == 0)
+                {
+                    MessageBox.Show("No students to export.", "Export",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
                 SaveFileDialog saveDialog = new SaveFileDialog();
                 saveDialog.Filter = "CSV Files (*.csv)|*.csv";
                 saveDialog.FileName = "Students_" + DateTime.Now.ToString("yyyyMMdd_HHmmss");
@@ -639,11 +654,12 @@ namespace CollegeLMS
                         // Write rows
                         foreach (DataRow row in currentTable.Rows)
                         {
-                            sw.WriteLine(row["StudentID"] + "," +
-                                        row["FirstName"] + "," +
-                                        row["LastName"] + "," +
-                                        row["Age"] + "," +
-                                        row["CourseID"]);
+                            sw.WriteLine(
+                                EscapeCsv(row["StudentID"]) + "," +
+                                EscapeCsv(row["FirstName"]) + "," +
+                                EscapeCsv(row["LastName"]) + "," +
+                                EscapeCsv(row["Age"]) + "," +
+                                EscapeCsv(row["CourseID"]));
                         }
                     }
                     statusLabel.Text = "📤 Exported to: " + saveDialog.FileName;
@@ -665,7 +681,15 @@ namespace CollegeLMS
         {
             try
             {
+                if (currentTable == null || currentTable.Rows.Count == 0)
+                {
+                    MessageBox.Show("No students to print.", "Print",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
                 PrintDocument pd = new PrintDocument();
+                int printRowIndex = 0;
                 pd.PrintPage += (s, ev) =>
                 {
                     Graphics g = ev.Graphics;
@@ -696,9 +720,10 @@ namespace CollegeLMS
                     y += 30;
 
                     // Rows
-                    bool alternate = false;
-                    foreach (DataRow row in currentTable.Rows)
+                    bool alternate = (printRowIndex % 2) == 1;
+                    while (printRowIndex < currentTable.Rows.Count && y <= ev.MarginBounds.Bottom - 40)
                     {
+                        DataRow row = currentTable.Rows[printRowIndex];
                         x = 50;
                         if (alternate)
                             g.FillRectangle(new SolidBrush(Color.FromArgb(235, 244, 255)), 50, y, 530, 22);
@@ -711,13 +736,15 @@ namespace CollegeLMS
 
                         y += 22;
                         alternate = !alternate;
-
-                        if (y > ev.PageBounds.Height - 100) break;
+                        printRowIndex++;
                     }
 
                     // Footer
                     g.DrawLine(Pens.SteelBlue, 50, y + 5, 700, y + 5);
                     g.DrawString("Total Students: " + currentTable.Rows.Count, headerFont, Brushes.DarkBlue, 50, y + 10);
+
+                    ev.HasMorePages = printRowIndex < currentTable.Rows.Count;
+                    if (!ev.HasMorePages) printRowIndex = 0;
 
                 };
 
