@@ -43,6 +43,11 @@ namespace CollegeLMS
             this.DoubleBuffered = true;
             this.Resize += StudentsForm_Resize;
             this.Paint += StudentsForm_Paint;
+
+            UiTheme.WireCommonShortcuts(
+                this,
+                findSearchBox: () => txtSearch,
+                triggerSearch: () => btnView_Click(this, EventArgs.Empty));
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -268,53 +273,8 @@ namespace CollegeLMS
         // =====================
         private void SetupDataGridView()
         {
-            dataGridView1.EnableHeadersVisualStyles = false;
-
-            // Header style
-            dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(31, 84, 147);
-            dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Bold);
-            dataGridView1.ColumnHeadersDefaultCellStyle.Padding = new Padding(5);
-            dataGridView1.ColumnHeadersHeight = 35;
-
-            // Row style
-            dataGridView1.DefaultCellStyle.Font = new Font("Arial", 10);
-            dataGridView1.DefaultCellStyle.Padding = new Padding(6, 3, 6, 3);
-            dataGridView1.RowTemplate.Height = 34;
-
-            // Alternating rows
-            dataGridView1.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(235, 244, 255);
-
-            // Selection style
-            dataGridView1.DefaultCellStyle.SelectionBackColor = Color.FromArgb(31, 84, 147);
-            dataGridView1.DefaultCellStyle.SelectionForeColor = Color.White;
-
-            // Grid appearance
-            dataGridView1.RowHeadersVisible = false;
-            dataGridView1.GridColor = Color.FromArgb(140, 204, 235);
-            dataGridView1.BorderStyle = BorderStyle.None;
-            dataGridView1.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
-            dataGridView1.BackgroundColor = Color.White;
-
-            // Hover effect
-            dataGridView1.CellMouseEnter += (s, e) =>
-            {
-                if (e.RowIndex >= 0)
-                {
-                    dataGridView1.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.FromArgb(210, 230, 255);
-                    dataGridView1.Rows[e.RowIndex].DefaultCellStyle.ForeColor = Color.Black;
-                }
-            };
-            dataGridView1.CellMouseLeave += (s, e) =>
-            {
-                if (e.RowIndex >= 0)
-                {
-                    dataGridView1.Rows[e.RowIndex].DefaultCellStyle.BackColor = e.RowIndex % 2 == 0
-                        ? Color.White
-                        : Color.FromArgb(235, 244, 255);
-                    dataGridView1.Rows[e.RowIndex].DefaultCellStyle.ForeColor = Color.Black;
-                }
-            };
+            UiTheme.ApplyGridDefaults(dataGridView1);
+            UiTheme.WireGridRowHover(dataGridView1);
         }
 
         // =====================
@@ -462,7 +422,7 @@ namespace CollegeLMS
                     cmd.Parameters.AddWithValue("@CourseID", courseId);
                     cmd.ExecuteNonQuery();
                     statusLabel.Text = "✅ Added: " + txtFirstName.Text + " " + txtLastName.Text;
-                    MessageBox.Show("✅ Student added successfully!\n\n" +
+                    MessageBox.Show("Student added successfully!\n\n" +
                         "Name: " + txtFirstName.Text + " " + txtLastName.Text + "\n" +
                         "Course: " + txtCourseID.Text,
                         "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -546,7 +506,7 @@ namespace CollegeLMS
                         cmd.Parameters.AddWithValue("@CourseID", courseId);
                         cmd.ExecuteNonQuery();
                         statusLabel.Text = "✅ Updated: " + txtFirstName.Text + " " + txtLastName.Text;
-                        MessageBox.Show("✅ Student updated successfully!\n\n" +
+                        MessageBox.Show("Student updated successfully!\n\n" +
                             "Name: " + txtFirstName.Text + " " + txtLastName.Text,
                             "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         LoadStudents();
@@ -584,7 +544,7 @@ namespace CollegeLMS
             }
 
             DialogResult confirm = MessageBox.Show(
-                "🗑️ Are you sure you want to DELETE:\n\n" +
+                "Are you sure you want to DELETE:\n\n" +
                 "Name: " + txtFirstName.Text + " " + txtLastName.Text + "\n" +
                 "ID: " + txtStudentID.Text + "\n" +
                 "Course: " + txtCourseID.Text + "\n\n" +
@@ -602,7 +562,7 @@ namespace CollegeLMS
                         cmd.Parameters.AddWithValue("@StudentID", studentId);
                         cmd.ExecuteNonQuery();
                         statusLabel.Text = "🗑️ Deleted: " + txtFirstName.Text + " " + txtLastName.Text;
-                        MessageBox.Show("🗑️ Student deleted successfully!", "Deleted",
+                        MessageBox.Show("Student deleted successfully!", "Deleted",
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                         LoadStudents();
                         ClearFields();
@@ -663,7 +623,7 @@ namespace CollegeLMS
                         }
                     }
                     statusLabel.Text = "📤 Exported to: " + saveDialog.FileName;
-                    MessageBox.Show("✅ Students exported successfully!\n\nSaved to:\n" + saveDialog.FileName,
+                    MessageBox.Show("Students exported successfully!\n\nSaved to:\n" + saveDialog.FileName,
                         "Export Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
@@ -789,10 +749,7 @@ namespace CollegeLMS
 
         private void PolishStatusBar()
         {
-            if (statusLabel == null) return;
-            statusLabel.AutoSize = false;
-            statusLabel.TextAlign = ContentAlignment.MiddleLeft;
-            statusLabel.Padding = new Padding(8, 0, 0, 0);
+            UiTheme.ApplyStatusLabel(statusLabel);
         }
 
         private void ClearFields()

@@ -31,6 +31,10 @@ namespace CollegeLMS
             this.DoubleBuffered = true;
             this.Resize += DepartmentsForm_Resize;
             this.Paint += DepartmentsForm_Paint;
+
+            UiTheme.WireCommonShortcuts(
+                this,
+                triggerSearch: LoadDepartments);
         }
 
         private void DepartmentsForm_Load(object sender, EventArgs e)
@@ -229,38 +233,8 @@ namespace CollegeLMS
 
         private void SetupGrid()
         {
-            dataGridView1.EnableHeadersVisualStyles = false;
-            dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(31, 84, 147);
-            dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Bold);
-            dataGridView1.ColumnHeadersHeight = 38;
-            dataGridView1.DefaultCellStyle.Font = new Font("Arial", 10);
-            dataGridView1.DefaultCellStyle.Padding = new Padding(6, 3, 6, 3);
-            dataGridView1.RowTemplate.Height = 34;
-            dataGridView1.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(235, 244, 255);
-            dataGridView1.DefaultCellStyle.SelectionBackColor = Color.FromArgb(31, 84, 147);
-            dataGridView1.DefaultCellStyle.SelectionForeColor = Color.White;
-            dataGridView1.RowHeadersVisible = false;
-            dataGridView1.BorderStyle = BorderStyle.None;
-            dataGridView1.BackgroundColor = Color.White;
-            dataGridView1.CellMouseEnter += (s, e) =>
-            {
-                if (e.RowIndex >= 0)
-                {
-                    dataGridView1.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.FromArgb(210, 230, 255);
-                    dataGridView1.Rows[e.RowIndex].DefaultCellStyle.ForeColor = Color.Black;
-                }
-            };
-            dataGridView1.CellMouseLeave += (s, e) =>
-            {
-                if (e.RowIndex >= 0)
-                {
-                    dataGridView1.Rows[e.RowIndex].DefaultCellStyle.BackColor = e.RowIndex % 2 == 0
-                        ? Color.White
-                        : Color.FromArgb(235, 244, 255);
-                    dataGridView1.Rows[e.RowIndex].DefaultCellStyle.ForeColor = Color.Black;
-                }
-            };
+            UiTheme.ApplyGridDefaults(dataGridView1);
+            UiTheme.WireGridRowHover(dataGridView1);
         }
 
         private void LoadDepartments()
@@ -461,10 +435,7 @@ namespace CollegeLMS
 
         private void PolishStatusBar()
         {
-            if (statusLabel == null) return;
-            statusLabel.AutoSize = false;
-            statusLabel.TextAlign = ContentAlignment.MiddleLeft;
-            statusLabel.Padding = new Padding(8, 0, 0, 0);
+            UiTheme.ApplyStatusLabel(statusLabel);
         }
 
         private void ClearFields()
