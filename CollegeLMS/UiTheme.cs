@@ -81,13 +81,16 @@ namespace CollegeLMS
             grid.ColumnHeadersDefaultCellStyle.BackColor = BrandBlue;
             grid.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
             grid.ColumnHeadersDefaultCellStyle.Font = FontGridHeader;
-            grid.ColumnHeadersDefaultCellStyle.Padding = new Padding(6, 4, 6, 4);
-            grid.ColumnHeadersHeight = 36;
+            grid.ColumnHeadersDefaultCellStyle.Padding = new Padding(4, 2, 4, 2);
+            grid.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.False;
+            grid.ColumnHeadersHeight = 32;
             grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
 
             grid.DefaultCellStyle.Font = FontGridCell;
-            grid.DefaultCellStyle.Padding = new Padding(6, 4, 6, 4);
-            grid.RowTemplate.Height = 34;
+            grid.DefaultCellStyle.Padding = new Padding(4, 2, 4, 2);
+            grid.DefaultCellStyle.WrapMode = DataGridViewTriState.False;
+            grid.RowTemplate.Height = 28;
+            grid.RowTemplate.MinimumHeight = 24;
             grid.AlternatingRowsDefaultCellStyle.BackColor = GridAltRow;
             grid.DefaultCellStyle.SelectionBackColor = BrandBlue;
             grid.DefaultCellStyle.SelectionForeColor = Color.White;
