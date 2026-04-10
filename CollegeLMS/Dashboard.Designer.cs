@@ -57,12 +57,14 @@ namespace CollegeLMS
             this.pnlTitle.Controls.Add(this.lblSubTitle);
             this.pnlTitle.Controls.Add(this.lblDateTime);
             this.pnlTitle.Paint += (s, e) => {
-                var brush = new System.Drawing.Drawing2D.LinearGradientBrush(
+                using (var brush = new System.Drawing.Drawing2D.LinearGradientBrush(
                     this.pnlTitle.ClientRectangle,
                     System.Drawing.Color.FromArgb(15, 52, 112),
                     System.Drawing.Color.FromArgb(52, 120, 200),
-                    System.Drawing.Drawing2D.LinearGradientMode.Horizontal);
-                e.Graphics.FillRectangle(brush, this.pnlTitle.ClientRectangle);
+                    System.Drawing.Drawing2D.LinearGradientMode.Horizontal))
+                {
+                    e.Graphics.FillRectangle(brush, this.pnlTitle.ClientRectangle);
+                }
             };
 
             // ── Title ──
@@ -263,13 +265,19 @@ namespace CollegeLMS
             this.pnlFooter.BackColor = System.Drawing.Color.FromArgb(20, 63, 120);
             this.pnlFooter.Controls.Add(this.lblFooterText);
             this.pnlFooter.Paint += (s, e) => {
-                var brush = new System.Drawing.Drawing2D.LinearGradientBrush(
+                using (var brush = new System.Drawing.Drawing2D.LinearGradientBrush(
                     this.pnlFooter.ClientRectangle,
                     System.Drawing.Color.FromArgb(31, 84, 147),
                     System.Drawing.Color.FromArgb(15, 52, 112),
-                    System.Drawing.Drawing2D.LinearGradientMode.Vertical);
-                e.Graphics.FillRectangle(brush, this.pnlFooter.ClientRectangle);
-                e.Graphics.DrawLine(new System.Drawing.Pen(System.Drawing.Color.FromArgb(140, 204, 235), 1), 0, 0, this.pnlFooter.Width, 0);
+                    System.Drawing.Drawing2D.LinearGradientMode.Vertical))
+                {
+                    e.Graphics.FillRectangle(brush, this.pnlFooter.ClientRectangle);
+                }
+
+                using (var pen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(140, 204, 235), 1))
+                {
+                    e.Graphics.DrawLine(pen, 0, 0, this.pnlFooter.Width, 0);
+                }
             };
 
             // Footer Label

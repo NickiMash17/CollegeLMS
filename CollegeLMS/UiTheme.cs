@@ -7,31 +7,46 @@ namespace CollegeLMS
     internal static class UiTheme
     {
         internal static readonly Color BrandBlue = Color.FromArgb(31, 84, 147);
+        internal static readonly Color BrandBlueDark = Color.FromArgb(20, 63, 120);
+        internal static readonly Color Surface = Color.White;
+        internal static readonly Color AppBackground = Color.FromArgb(245, 248, 255);
         internal static readonly Color GridAltRow = Color.FromArgb(235, 244, 255);
         internal static readonly Color GridHoverRow = Color.FromArgb(210, 230, 255);
         internal static readonly Color GridLine = Color.FromArgb(140, 204, 235);
+
+        internal static readonly Font FontBase = new Font("Segoe UI", 9F, FontStyle.Regular);
+        internal static readonly Font FontHeaderTitle = new Font("Segoe UI Semibold", 24F, FontStyle.Bold);
+        internal static readonly Font FontHeaderSubtitle = new Font("Segoe UI", 10F, FontStyle.Italic);
+        internal static readonly Font FontNav = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+        internal static readonly Font FontButton = new Font("Segoe UI Semibold", 9.5F, FontStyle.Bold);
+        internal static readonly Font FontCardTitle = new Font("Segoe UI Semibold", 13F, FontStyle.Bold);
+        internal static readonly Font FontCardSubtitle = new Font("Segoe UI", 9F, FontStyle.Regular);
+        internal static readonly Font FontEmojiLarge = new Font("Segoe UI Emoji", 18F, FontStyle.Regular);
+        internal static readonly Font FontGridHeader = new Font("Segoe UI Semibold", 9.5F, FontStyle.Bold);
+        internal static readonly Font FontGridCell = new Font("Segoe UI", 9.5F, FontStyle.Regular);
 
         internal static void ApplyFormDefaults(Form form)
         {
             if (form == null) return;
 
             form.AutoScaleMode = AutoScaleMode.Dpi;
-            form.Font = new Font("Segoe UI", 9F, FontStyle.Regular);
+            form.Font = FontBase;
             form.StartPosition = FormStartPosition.CenterScreen;
             form.KeyPreview = true;
+            form.BackColor = AppBackground;
         }
 
         internal static void ApplyHeader(Label title, Label subtitle)
         {
             if (title != null)
             {
-                title.Font = new Font("Segoe UI Semibold", 20F, FontStyle.Bold);
+                title.Font = FontHeaderTitle;
                 title.TextAlign = ContentAlignment.MiddleCenter;
             }
 
             if (subtitle != null)
             {
-                subtitle.Font = new Font("Segoe UI", 9.5F, FontStyle.Italic);
+                subtitle.Font = FontHeaderSubtitle;
                 subtitle.TextAlign = ContentAlignment.MiddleCenter;
             }
         }
@@ -59,23 +74,39 @@ namespace CollegeLMS
             grid.RowHeadersVisible = false;
             grid.BorderStyle = BorderStyle.None;
             grid.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
-            grid.BackgroundColor = Color.White;
+            grid.BackgroundColor = Surface;
             grid.GridColor = GridLine;
 
             grid.EnableHeadersVisualStyles = false;
             grid.ColumnHeadersDefaultCellStyle.BackColor = BrandBlue;
             grid.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-            grid.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            grid.ColumnHeadersDefaultCellStyle.Font = FontGridHeader;
             grid.ColumnHeadersDefaultCellStyle.Padding = new Padding(6, 4, 6, 4);
             grid.ColumnHeadersHeight = 36;
             grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
 
-            grid.DefaultCellStyle.Font = new Font("Segoe UI", 9.5F, FontStyle.Regular);
+            grid.DefaultCellStyle.Font = FontGridCell;
             grid.DefaultCellStyle.Padding = new Padding(6, 4, 6, 4);
             grid.RowTemplate.Height = 34;
             grid.AlternatingRowsDefaultCellStyle.BackColor = GridAltRow;
             grid.DefaultCellStyle.SelectionBackColor = BrandBlue;
             grid.DefaultCellStyle.SelectionForeColor = Color.White;
+        }
+
+        internal static void ApplyNavButton(Button button)
+        {
+            if (button == null) return;
+            button.Font = FontNav;
+            button.FlatStyle = FlatStyle.Flat;
+            button.FlatAppearance.BorderSize = 0;
+        }
+
+        internal static void ApplyActionButton(Button button)
+        {
+            if (button == null) return;
+            button.Font = FontButton;
+            button.FlatStyle = FlatStyle.Flat;
+            button.FlatAppearance.BorderSize = 0;
         }
 
         internal static void WireGridRowHover(DataGridView grid)
@@ -135,4 +166,3 @@ namespace CollegeLMS
         }
     }
 }
-

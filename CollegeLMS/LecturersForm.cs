@@ -28,6 +28,7 @@ namespace CollegeLMS
         public LecturersForm()
         {
             InitializeComponent();
+            UiTheme.ApplyFormDefaults(this);
             this.DoubleBuffered = true;
             this.Resize += LecturersForm_Resize;
             this.Paint += LecturersForm_Paint;
@@ -55,6 +56,21 @@ namespace CollegeLMS
         private void EnhanceUI()
         {
             ApplyIconText();
+            UiTheme.ApplyHeader(lblTitle, lblSubTitle);
+
+            UiTheme.ApplyNavButton(btnNavDashboard);
+            UiTheme.ApplyNavButton(btnNavStudents);
+            UiTheme.ApplyNavButton(btnNavCourses);
+            UiTheme.ApplyNavButton(btnNavDepartments);
+            UiTheme.ApplyNavButton(btnNavModules);
+            UiTheme.ApplyNavButton(btnNavLecturers);
+
+            UiTheme.ApplyActionButton(btnAdd);
+            UiTheme.ApplyActionButton(btnUpdate);
+            UiTheme.ApplyActionButton(btnDelete);
+            UiTheme.ApplyActionButton(btnClear);
+            UiTheme.ApplyActionButton(btnBack);
+
             ApplyButtonHover(btnAdd);
             ApplyButtonHover(btnUpdate);
             ApplyButtonHover(btnDelete);
@@ -88,10 +104,7 @@ namespace CollegeLMS
         private void CenterHeader()
         {
             if (pnlTitle == null || lblTitle == null || lblSubTitle == null) return;
-            lblTitle.Font = new Font("Arial", 24, FontStyle.Bold);
-            lblSubTitle.Font = new Font("Arial", 10, FontStyle.Italic);
-            lblTitle.TextAlign = ContentAlignment.MiddleCenter;
-            lblSubTitle.TextAlign = ContentAlignment.MiddleCenter;
+            UiTheme.ApplyHeader(lblTitle, lblSubTitle);
             lblTitle.Left = (pnlTitle.Width - lblTitle.Width) / 2;
             lblSubTitle.Left = (pnlTitle.Width - lblSubTitle.Width) / 2;
             lblTitle.Top = 10;

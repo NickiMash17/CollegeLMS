@@ -52,15 +52,17 @@ namespace CollegeLMS
             this.pnlTitle.Controls.Add(this.lblTitle);
             this.pnlTitle.Controls.Add(this.lblSubTitle);
             this.pnlTitle.Paint += (s, e) => {
-                var brush = new System.Drawing.Drawing2D.LinearGradientBrush(
+                using (var brush = new System.Drawing.Drawing2D.LinearGradientBrush(
                     this.pnlTitle.ClientRectangle,
                     System.Drawing.Color.FromArgb(20, 63, 120),
                     System.Drawing.Color.FromArgb(52, 120, 200),
-                    System.Drawing.Drawing2D.LinearGradientMode.Horizontal);
-                e.Graphics.FillRectangle(brush, this.pnlTitle.ClientRectangle);
+                    System.Drawing.Drawing2D.LinearGradientMode.Horizontal))
+                {
+                    e.Graphics.FillRectangle(brush, this.pnlTitle.ClientRectangle);
+                }
             };
 
-            this.lblTitle.Text = "??  Courses Management";
+            this.lblTitle.Text = "📚  Courses Management";
             this.lblTitle.Font = new System.Drawing.Font("Arial", 22, System.Drawing.FontStyle.Bold);
             this.lblTitle.ForeColor = System.Drawing.Color.White;
             this.lblTitle.BackColor = System.Drawing.Color.Transparent;
@@ -202,7 +204,7 @@ namespace CollegeLMS
             // Buttons
             this.btnAdd.Location = new System.Drawing.Point(30, 290);
             this.btnAdd.Size = new System.Drawing.Size(90, 38);
-            this.btnAdd.Text = "? Add";
+            this.btnAdd.Text = "➕ Add";
             this.btnAdd.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Bold);
             this.btnAdd.BackColor = System.Drawing.Color.SeaGreen;
             this.btnAdd.ForeColor = System.Drawing.Color.White;
@@ -213,7 +215,7 @@ namespace CollegeLMS
 
             this.btnUpdate.Location = new System.Drawing.Point(130, 290);
             this.btnUpdate.Size = new System.Drawing.Size(90, 38);
-            this.btnUpdate.Text = "?? Update";
+            this.btnUpdate.Text = "✏️ Update";
             this.btnUpdate.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Bold);
             this.btnUpdate.BackColor = System.Drawing.Color.DarkOrange;
             this.btnUpdate.ForeColor = System.Drawing.Color.White;
@@ -224,7 +226,7 @@ namespace CollegeLMS
 
             this.btnDelete.Location = new System.Drawing.Point(230, 290);
             this.btnDelete.Size = new System.Drawing.Size(90, 38);
-            this.btnDelete.Text = "??? Delete";
+            this.btnDelete.Text = "🗑️ Delete";
             this.btnDelete.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Bold);
             this.btnDelete.BackColor = System.Drawing.Color.Crimson;
             this.btnDelete.ForeColor = System.Drawing.Color.White;
@@ -235,7 +237,7 @@ namespace CollegeLMS
 
             this.btnClear.Location = new System.Drawing.Point(330, 290);
             this.btnClear.Size = new System.Drawing.Size(90, 38);
-            this.btnClear.Text = "?? Clear";
+            this.btnClear.Text = "🧹 Clear";
             this.btnClear.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Bold);
             this.btnClear.BackColor = System.Drawing.Color.SlateGray;
             this.btnClear.ForeColor = System.Drawing.Color.White;
@@ -246,7 +248,7 @@ namespace CollegeLMS
 
             this.btnBack.Location = new System.Drawing.Point(30, 345);
             this.btnBack.Size = new System.Drawing.Size(130, 38);
-            this.btnBack.Text = "?? Back to Dashboard";
+            this.btnBack.Text = "⬅️ Back to Dashboard";
             this.btnBack.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Bold);
             this.btnBack.BackColor = System.Drawing.Color.FromArgb(31, 84, 147);
             this.btnBack.ForeColor = System.Drawing.Color.White;
@@ -279,13 +281,19 @@ namespace CollegeLMS
             this.pnlFooter.BackColor = System.Drawing.Color.FromArgb(20, 63, 120);
             this.pnlFooter.Controls.Add(this.lblFooterText);
             this.pnlFooter.Paint += (s, e) => {
-                var brush = new System.Drawing.Drawing2D.LinearGradientBrush(
+                using (var brush = new System.Drawing.Drawing2D.LinearGradientBrush(
                     this.pnlFooter.ClientRectangle,
                     System.Drawing.Color.FromArgb(31, 84, 147),
                     System.Drawing.Color.FromArgb(15, 52, 112),
-                    System.Drawing.Drawing2D.LinearGradientMode.Vertical);
-                e.Graphics.FillRectangle(brush, this.pnlFooter.ClientRectangle);
-                e.Graphics.DrawLine(new System.Drawing.Pen(System.Drawing.Color.FromArgb(140, 204, 235), 1), 0, 0, this.pnlFooter.Width, 0);
+                    System.Drawing.Drawing2D.LinearGradientMode.Vertical))
+                {
+                    e.Graphics.FillRectangle(brush, this.pnlFooter.ClientRectangle);
+                }
+
+                using (var pen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(140, 204, 235), 1))
+                {
+                    e.Graphics.DrawLine(pen, 0, 0, this.pnlFooter.Width, 0);
+                }
             };
 
             // Footer Label

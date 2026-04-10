@@ -25,6 +25,7 @@ namespace CollegeLMS
         public Dashboard()
         {
             InitializeComponent();
+            UiTheme.ApplyFormDefaults(this);
             this.DoubleBuffered = true;
             this.Resize += Dashboard_Resize;
             this.Paint += Dashboard_Paint;
@@ -52,6 +53,14 @@ namespace CollegeLMS
 
             if (pnlNav != null) pnlNav.Paint += NavBar_Paint;
             activeNavButton = btnNavDashboard;
+
+            UiTheme.ApplyHeader(lblTitle, lblSubTitle);
+            UiTheme.ApplyNavButton(btnNavDashboard);
+            UiTheme.ApplyNavButton(btnNavStudents);
+            UiTheme.ApplyNavButton(btnNavCourses);
+            UiTheme.ApplyNavButton(btnNavDepartments);
+            UiTheme.ApplyNavButton(btnNavModules);
+            UiTheme.ApplyNavButton(btnNavLecturers);
 
             if (lblFooterText != null) 
                 lblFooterText.Text = "© 2026 Nicolette Mashaba  •  Created with ❤️ by Nicolette Mashaba";
@@ -245,28 +254,27 @@ namespace CollegeLMS
 
             e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
             e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            using (Font iconFont = new Font("Segoe UI Emoji", 18, FontStyle.Regular))
-            using (Font titleFont = new Font("Arial", 13, FontStyle.Bold))
-            using (Font subFont = new Font("Arial", 9, FontStyle.Regular))
-            {
-                Size iconSize = TextRenderer.MeasureText(spec.Icon, iconFont);
-                Size titleSize = TextRenderer.MeasureText(spec.Title, titleFont);
-                Size subSize = TextRenderer.MeasureText(spec.Subtitle, subFont);
+            Font iconFont = UiTheme.FontEmojiLarge;
+            Font titleFont = UiTheme.FontCardTitle;
+            Font subFont = UiTheme.FontCardSubtitle;
 
-                int totalH = iconSize.Height + titleSize.Height + subSize.Height + 8;
-                int startY = (btn.Height - totalH) / 2;
+            Size iconSize = TextRenderer.MeasureText(spec.Icon, iconFont);
+            Size titleSize = TextRenderer.MeasureText(spec.Title, titleFont);
+            Size subSize = TextRenderer.MeasureText(spec.Subtitle, subFont);
 
-                int iconX = (btn.Width - iconSize.Width) / 2;
-                int titleX = (btn.Width - titleSize.Width) / 2;
-                int subX = (btn.Width - subSize.Width) / 2;
+            int totalH = iconSize.Height + titleSize.Height + subSize.Height + 8;
+            int startY = (btn.Height - totalH) / 2;
 
-                TextRenderer.DrawText(e.Graphics, spec.Icon, iconFont,
-                    new Point(iconX, startY), Color.White);
-                TextRenderer.DrawText(e.Graphics, spec.Title, titleFont,
-                    new Point(titleX, startY + iconSize.Height + 2), Color.White);
-                TextRenderer.DrawText(e.Graphics, spec.Subtitle, subFont,
-                    new Point(subX, startY + iconSize.Height + titleSize.Height + 4), Color.White);
-            }
+            int iconX = (btn.Width - iconSize.Width) / 2;
+            int titleX = (btn.Width - titleSize.Width) / 2;
+            int subX = (btn.Width - subSize.Width) / 2;
+
+            TextRenderer.DrawText(e.Graphics, spec.Icon, iconFont,
+                new Point(iconX, startY), Color.White);
+            TextRenderer.DrawText(e.Graphics, spec.Title, titleFont,
+                new Point(titleX, startY + iconSize.Height + 2), Color.White);
+            TextRenderer.DrawText(e.Graphics, spec.Subtitle, subFont,
+                new Point(subX, startY + iconSize.Height + titleSize.Height + 4), Color.White);
         }
 
         private void Dashboard_Paint(object sender, PaintEventArgs e)
