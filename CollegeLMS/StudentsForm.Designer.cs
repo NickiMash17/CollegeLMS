@@ -85,8 +85,8 @@ namespace CollegeLMS
             this.pnlTitle.Paint += (s, e) => {
                 using (var brush = new System.Drawing.Drawing2D.LinearGradientBrush(
                     this.pnlTitle.ClientRectangle,
-                    System.Drawing.Color.FromArgb(20, 63, 120),
-                    System.Drawing.Color.FromArgb(52, 120, 200),
+                    System.Drawing.Color.FromArgb(79, 70, 229),
+                    System.Drawing.Color.FromArgb(67, 56, 202),
                     System.Drawing.Drawing2D.LinearGradientMode.Horizontal))
                 {
                     e.Graphics.FillRectangle(brush, this.pnlTitle.ClientRectangle);
@@ -277,7 +277,7 @@ namespace CollegeLMS
             this.btnView.Size = new System.Drawing.Size(90, 38);
             this.btnView.Text = "👁️ View";
             this.btnView.Name = "btnView";
-            this.btnView.Font = new System.Drawing.Font("Arial", 9, System.Drawing.FontStyle.Bold);
+            this.btnView.BackColor = System.Drawing.Color.FromArgb(79, 70, 229);
             this.btnView.BackColor = System.Drawing.Color.FromArgb(31, 84, 147);
             this.btnView.ForeColor = System.Drawing.Color.White;
             this.btnView.FlatStyle = System.Windows.Forms.FlatStyle.Flat;

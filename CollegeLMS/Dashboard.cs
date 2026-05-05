@@ -1,9 +1,6 @@
 // ============================================================
-// COPYRIGHT NOTICE
-// ============================================================
 // Project:     College Learner Management System (CollegeLMS)
-// Author:      Nicolette Mashaba
-// Student No:  20232990
+// Author:      Nicolette Mashaba  |  Student No: 20232990
 // © 2026 Nicolette Mashaba. All rights reserved.
 // ============================================================
 
@@ -17,33 +14,36 @@ namespace CollegeLMS
 {
     public partial class Dashboard : Form
     {
-        private readonly Dictionary<Button, Color> cardColors = new Dictionary<Button, Color>();
-        private readonly Dictionary<Button, CardSpec> cardSpecs = new Dictionary<Button, CardSpec>();
-        private Button activeNavButton;
+        private readonly Dictionary<Button, Point>    cardHomeLocations = new Dictionary<Button, Point>();
+        private readonly Dictionary<Button, CardSpec> cardSpecs         = new Dictionary<Button, CardSpec>();
+        private Button     activeNavButton;
         private PictureBox bgPicture;
 
         public Dashboard()
         {
             InitializeComponent();
             UiTheme.ApplyFormDefaults(this);
-            this.DoubleBuffered = true;
-            this.Resize += Dashboard_Resize;
-            this.Paint += Dashboard_Paint;
+            DoubleBuffered = true;
+            ResizeRedraw   = true;
 
-            // Background image container (ensures image shows behind all controls)
+            Resize += Dashboard_Resize;
+            Paint  += Dashboard_Paint;
+
             bgPicture = new PictureBox
             {
-                Dock = DockStyle.Fill,
-                SizeMode = PictureBoxSizeMode.StretchImage
+                Dock      = DockStyle.Fill,
+                SizeMode  = PictureBoxSizeMode.StretchImage,
+                BackColor = Color.Transparent
             };
             Controls.Add(bgPicture);
             bgPicture.SendToBack();
 
-            SetupCard(btnStudents, "👨‍🎓", "Students", "Manage Students");
-            SetupCard(btnCourses, "📚", "Courses", "Manage Courses");
-            SetupCard(btnDepartments, "🏢", "Departments", "Manage Departments");
-            SetupCard(btnModules, "📖", "Modules", "Manage Modules");
-            SetupCard(btnLecturers, "👨‍🏫", "Lecturers", "Manage Lecturers");
+            // Card specs — emoji icons for the dashboard cards
+            SetupCard(btnStudents,    "\U0001F464", "Students",    "Manage Students");
+            SetupCard(btnCourses,     "\U0001F4DA", "Courses",     "Manage Courses");
+            SetupCard(btnDepartments, "\U0001F3E2", "Departments", "Manage Departments");
+            SetupCard(btnModules,     "\U0001F4D6", "Modules",     "Manage Modules");
+            SetupCard(btnLecturers,   "\U0001F468\u200D\U0001F3EB", "Lecturers", "Manage Lecturers");
 
             WireCardHover(btnStudents);
             WireCardHover(btnCourses);
@@ -51,26 +51,29 @@ namespace CollegeLMS
             WireCardHover(btnModules);
             WireCardHover(btnLecturers);
 
-            if (pnlNav != null) pnlNav.Paint += NavBar_Paint;
+            if (pnlNav != null)
+                pnlNav.Paint += (s, e) => UiTheme.PaintNavPanel(pnlNav, e, activeNavButton);
+
             activeNavButton = btnNavDashboard;
+            SetActiveNav(btnNavDashboard);
 
-            UiTheme.ApplyHeader(lblTitle, lblSubTitle);
-            UiTheme.ApplyNavButton(btnNavDashboard);
-            UiTheme.ApplyNavButton(btnNavStudents);
-            UiTheme.ApplyNavButton(btnNavCourses);
-            UiTheme.ApplyNavButton(btnNavDepartments);
-            UiTheme.ApplyNavButton(btnNavModules);
-            UiTheme.ApplyNavButton(btnNavLecturers);
+            UiTheme.ApplyNavStyle(btnNavDashboard, btnNavStudents, btnNavCourses,
+                                  btnNavDepartments, btnNavModules, btnNavLecturers);
 
-            if (lblFooterText != null) 
-                lblFooterText.Text = "© 2026 Nicolette Mashaba  •  Created with ❤️ by Nicolette Mashaba";
+            UiTheme.ApplyDangerButton(btnLogout);
+            btnLogout.Text = "Sign Out";
+
+            if (lblFooterText != null)
+                lblFooterText.Text =
+                    "CTU College LMS   \u2022   \u00A9 2026 Nicolette Mashaba   \u2022   Empowering Education Through Technology";
 
             TrySetBackgroundImage();
         }
 
         private void Dashboard_Load(object sender, EventArgs e)
         {
-            UpdateDateTimeLabel();
+            if (lblDateTime != null)
+                lblDateTime.Text = DateTime.Now.ToString("dddd, dd MMMM yyyy");
             LayoutDashboard();
         }
 
@@ -80,162 +83,61 @@ namespace CollegeLMS
             Invalidate();
         }
 
-        private void UpdateDateTimeLabel()
-        {
-            if (lblDateTime != null)
-            {
-                lblDateTime.Text = DateTime.Now.ToString("dddd, dd MMMM yyyy");
-            }
-        }
-
         private void LayoutDashboard()
         {
-            if (pnlTitle == null || pnlNav == null || pnlStatus == null) return;
+            if (pnlTitle == null || pnlNav == null) return;
 
-            int contentTop = pnlNav.Bottom + 20;
-            int contentBottom = pnlStatus.Top - 20;
+            UiTheme.ApplyHeader(pnlTitle, lblTitle, lblSubTitle);
+
+            if (lblWelcome  != null) { lblWelcome.Width  = Math.Min(800, ClientSize.Width - 40); lblWelcome.Left  = (ClientSize.Width - lblWelcome.Width)  / 2; }
+            if (lblInstruct != null) { lblInstruct.Width = Math.Min(700, ClientSize.Width - 40); lblInstruct.Left = (ClientSize.Width - lblInstruct.Width) / 2; }
+            if (lblDateTime != null) lblDateTime.Left = pnlTitle.Width - lblDateTime.Width - 22;
+            if (btnLogout   != null) btnLogout.Left   = pnlTitle.Width - btnLogout.Width   - 22;
+
+            int cardW = 260, cardH = 155, gap = 32, rowGap = 36;
+            int contentTop    = pnlNav.Bottom + 28;
+            int contentBottom = pnlStatus?.Top ?? ClientSize.Height - 90;
             int contentHeight = Math.Max(0, contentBottom - contentTop);
 
-            lblWelcome.Width = Math.Min(820, ClientSize.Width - 40);
-            lblWelcome.Left = (ClientSize.Width - lblWelcome.Width) / 2;
-            lblWelcome.Top = contentTop + 10;
+            int row1X = Math.Max(20, (ClientSize.Width - (cardW * 3 + gap * 2)) / 2);
+            int row2X = Math.Max(20, (ClientSize.Width - (cardW * 2 + gap))     / 2);
+            int blockH = cardH * 2 + rowGap + 50;
+            int row1Y  = contentTop + Math.Max(10, (contentHeight - blockH) / 2) + 20;
+            int row2Y  = row1Y + cardH + rowGap;
 
-            lblInstruct.Width = Math.Min(680, ClientSize.Width - 40);
-            lblInstruct.Left = (ClientSize.Width - lblInstruct.Width) / 2;
-            lblInstruct.Top = lblWelcome.Bottom + 10;
-
-            int cardW = 250;
-            int cardH = 150;
-            int gap = 35;
-            int heroGap = 30;
-            int rowGap = 40;
-
-            int totalRowW = cardW * 3 + gap * 2;
-            int startX = Math.Max(20, (ClientSize.Width - totalRowW) / 2);
-
-            int totalRow2W = cardW * 2 + gap;
-            int row2X = Math.Max(20, (ClientSize.Width - totalRow2W) / 2);
-
-            int blockHeight = (lblInstruct.Height + heroGap) + cardH + rowGap + cardH;
-            int blockTop = contentTop + Math.Max(10, (contentHeight - blockHeight) / 2);
-
-            lblWelcome.Top = blockTop;
-            lblInstruct.Top = lblWelcome.Bottom + 10;
-            int row1Y = lblInstruct.Bottom + heroGap;
-
-            btnStudents.Size = new System.Drawing.Size(cardW, cardH);
-            btnCourses.Size = new System.Drawing.Size(cardW, cardH);
-            btnDepartments.Size = new System.Drawing.Size(cardW, cardH);
-            btnModules.Size = new System.Drawing.Size(cardW, cardH);
-            btnLecturers.Size = new System.Drawing.Size(cardW, cardH);
-
-            btnDepartments.Location = new System.Drawing.Point(startX, row1Y);
-            btnCourses.Location = new System.Drawing.Point(startX + (cardW + gap), row1Y);
-            btnStudents.Location = new System.Drawing.Point(startX + 2 * (cardW + gap), row1Y);
-
-            int row2Y = row1Y + cardH + rowGap;
-            btnModules.Location = new System.Drawing.Point(row2X, row2Y);
-            btnLecturers.Location = new System.Drawing.Point(row2X + cardW + gap, row2Y);
-
-            if (pnlTitle != null)
+            void Place(Button b, int x, int y)
             {
-                lblTitle.Width = Math.Min(900, pnlTitle.Width - 40);
-                lblSubTitle.Width = Math.Min(900, pnlTitle.Width - 40);
-                lblTitle.TextAlign = ContentAlignment.MiddleCenter;
-                lblSubTitle.TextAlign = ContentAlignment.MiddleCenter;
-                lblTitle.Left = (pnlTitle.Width - lblTitle.Width) / 2;
-                lblSubTitle.Left = (pnlTitle.Width - lblSubTitle.Width) / 2;
-                lblTitle.Top = 22;
-                lblSubTitle.Top = lblTitle.Bottom + 6;
-                lblDateTime.Left = pnlTitle.Width - lblDateTime.Width - 20;
-            }
-
-            CenterNavButtons();
-            ApplyRoundedCards();
-        }
-
-        private void CenterNavButtons()
-        {
-            if (pnlNav == null) return;
-            int gap = 10;
-            Button[] navButtons = new[]
-            {
-                btnNavDashboard, btnNavStudents, btnNavCourses,
-                btnNavDepartments, btnNavModules, btnNavLecturers
-            };
-
-            int totalWidth = -gap;
-            foreach (Button b in navButtons)
-            {
-                if (b == null) continue;
-                totalWidth += b.Width + gap;
-            }
-
-            int startX = Math.Max(10, (pnlNav.Width - totalWidth) / 2);
-            int y = (pnlNav.Height - navButtons[0].Height) / 2;
-
-            int x = startX;
-            foreach (Button b in navButtons)
-            {
-                if (b == null) continue;
+                if (b == null) return;
+                b.Size     = new Size(cardW, cardH);
                 b.Location = new Point(x, y);
-                x += b.Width + gap;
+                UiTheme.SetRoundedRegion(b, 14);
             }
+
+            Place(btnDepartments, row1X,                     row1Y);
+            Place(btnCourses,     row1X + cardW + gap,       row1Y);
+            Place(btnStudents,    row1X + 2 * (cardW + gap), row1Y);
+            Place(btnModules,     row2X,                     row2Y);
+            Place(btnLecturers,   row2X + cardW + gap,       row2Y);
+
+            UiTheme.SetRoundedRegion(btnLogout, 8);
+            RememberCardHomes();
         }
 
-        private void NavBar_Paint(object sender, PaintEventArgs e)
+        private void RememberCardHomes()
         {
-            if (activeNavButton == null) return;
-            Rectangle r = activeNavButton.Bounds;
-            using (SolidBrush brush = new SolidBrush(Color.White))
+            void R(Button b) { if (b != null) cardHomeLocations[b] = b.Location; }
+            R(btnStudents); R(btnCourses); R(btnDepartments); R(btnModules); R(btnLecturers);
+        }
+
+        private void SetActiveNav(Button btn)
+        {
+            activeNavButton = btn;
+            if (btn != null)
             {
-                e.Graphics.FillRectangle(brush, r.Left, r.Bottom - 3, r.Width, 3);
+                btn.ForeColor = Color.White;
+                btn.Font      = new Font("Segoe UI Semibold", 9.5F, FontStyle.Bold);
             }
-        }
-
-        private void ApplyRoundedCards()
-        {
-            ApplyRounded(btnStudents, 10);
-            ApplyRounded(btnCourses, 10);
-            ApplyRounded(btnDepartments, 10);
-            ApplyRounded(btnModules, 10);
-            ApplyRounded(btnLecturers, 10);
-        }
-
-        private void ApplyRounded(Button btn, int radius)
-        {
-            if (btn == null) return;
-            Rectangle bounds = new Rectangle(0, 0, btn.Width, btn.Height);
-            using (System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath())
-            {
-                int r = radius * 2;
-                path.AddArc(bounds.X, bounds.Y, r, r, 180, 90);
-                path.AddArc(bounds.Right - r, bounds.Y, r, r, 270, 90);
-                path.AddArc(bounds.Right - r, bounds.Bottom - r, r, r, 0, 90);
-                path.AddArc(bounds.X, bounds.Bottom - r, r, r, 90, 90);
-                path.CloseAllFigures();
-                btn.Region = new Region(path);
-            }
-        }
-
-        private void WireCardHover(Button btn)
-        {
-            if (btn == null) return;
-            cardColors[btn] = btn.BackColor;
-            btn.FlatAppearance.MouseOverBackColor = ControlPaint.Light(btn.BackColor, 0.15f);
-            btn.FlatAppearance.MouseDownBackColor = ControlPaint.Dark(btn.BackColor, 0.10f);
-            btn.Text = string.Empty;
-            btn.Paint += Card_Paint;
-            btn.MouseEnter += (s, e) =>
-            {
-                Button b = (Button)s;
-                b.BackColor = ControlPaint.Light(cardColors[b], 0.15f);
-            };
-            btn.MouseLeave += (s, e) =>
-            {
-                Button b = (Button)s;
-                b.BackColor = cardColors[b];
-            };
+            pnlNav?.Invalidate();
         }
 
         private void SetupCard(Button btn, string icon, string title, string subtitle)
@@ -243,113 +145,98 @@ namespace CollegeLMS
             if (btn == null) return;
             cardSpecs[btn] = new CardSpec(icon, title, subtitle);
             btn.Text = string.Empty;
-            btn.UseCompatibleTextRendering = true;
+        }
+
+        private void WireCardHover(Button btn)
+        {
+            if (btn == null) return;
+            btn.MouseEnter += (s, e) =>
+            {
+                if (!cardHomeLocations.ContainsKey(btn)) cardHomeLocations[btn] = btn.Location;
+                btn.Location = new Point(cardHomeLocations[btn].X - 1, cardHomeLocations[btn].Y - 4);
+                Invalidate();
+            };
+            btn.MouseLeave += (s, e) =>
+            {
+                if (cardHomeLocations.ContainsKey(btn)) btn.Location = cardHomeLocations[btn];
+                Invalidate();
+            };
         }
 
         private void Card_Paint(object sender, PaintEventArgs e)
         {
-            Button btn = sender as Button;
-            if (btn == null || !cardSpecs.ContainsKey(btn)) return;
-            CardSpec spec = cardSpecs[btn];
-
-            e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
-            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            Font iconFont = UiTheme.FontEmojiLarge;
-            Font titleFont = UiTheme.FontCardTitle;
-            Font subFont = UiTheme.FontCardSubtitle;
-
-            Size iconSize = TextRenderer.MeasureText(spec.Icon, iconFont);
-            Size titleSize = TextRenderer.MeasureText(spec.Title, titleFont);
-            Size subSize = TextRenderer.MeasureText(spec.Subtitle, subFont);
-
-            int totalH = iconSize.Height + titleSize.Height + subSize.Height + 8;
-            int startY = (btn.Height - totalH) / 2;
-
-            int iconX = (btn.Width - iconSize.Width) / 2;
-            int titleX = (btn.Width - titleSize.Width) / 2;
-            int subX = (btn.Width - subSize.Width) / 2;
-
-            TextRenderer.DrawText(e.Graphics, spec.Icon, iconFont,
-                new Point(iconX, startY), Color.White);
-            TextRenderer.DrawText(e.Graphics, spec.Title, titleFont,
-                new Point(titleX, startY + iconSize.Height + 2), Color.White);
-            TextRenderer.DrawText(e.Graphics, spec.Subtitle, subFont,
-                new Point(subX, startY + iconSize.Height + titleSize.Height + 4), Color.White);
+            if (sender is Button btn && cardSpecs.ContainsKey(btn))
+            {
+                var s = cardSpecs[btn];
+                UiTheme.PaintDashboardCard(btn, s.Icon, s.Title, s.Subtitle, e);
+            }
         }
 
         private void Dashboard_Paint(object sender, PaintEventArgs e)
         {
-            DrawShadow(e.Graphics, btnStudents);
-            DrawShadow(e.Graphics, btnCourses);
-            DrawShadow(e.Graphics, btnDepartments);
-            DrawShadow(e.Graphics, btnModules);
-            DrawShadow(e.Graphics, btnLecturers);
+            var tray = GetCardsTrayBounds();
+            if (!tray.IsEmpty)
+            {
+                UiTheme.DrawSoftShadow(e.Graphics, tray, 28, 18, 12, 38);
+                UiTheme.DrawFrostedTray(e.Graphics, tray, 28);
+            }
+            void Shadow(Control c) { if (c != null && c.Visible) UiTheme.DrawSoftShadow(e.Graphics, c.Bounds, 14, 12, 8, 50); }
+            Shadow(btnStudents); Shadow(btnCourses); Shadow(btnDepartments); Shadow(btnModules); Shadow(btnLecturers);
         }
 
-        private void DrawShadow(Graphics g, Control c)
+        private Rectangle GetCardsTrayBounds()
         {
-            if (c == null) return;
-            int shadowOffset = 4;
-            using (SolidBrush shadowBrush = new SolidBrush(Color.FromArgb(28, 0, 0, 0)))
-            {
-                Rectangle r = new Rectangle(c.Left + shadowOffset, c.Top + shadowOffset, c.Width, c.Height);
-                g.FillRectangle(shadowBrush, r);
-            }
+            var cards = new[] { btnStudents, btnCourses, btnDepartments, btnModules, btnLecturers };
+            var union = Rectangle.Empty;
+            foreach (var b in cards)
+                if (b != null && b.Visible) union = union.IsEmpty ? b.Bounds : Rectangle.Union(union, b.Bounds);
+            if (union.IsEmpty) return Rectangle.Empty;
+            union.Inflate(38, 30);
+            return union;
         }
 
         private void TrySetBackgroundImage()
         {
             try
             {
-                string localFile = ResolveLocalBackgroundPath("tp244-bg1-01.jpg");
-                if (string.IsNullOrEmpty(localFile) || !File.Exists(localFile)) return;
-
-                Image img;
-                using (FileStream fs = File.OpenRead(localFile))
-                using (Image temp = Image.FromStream(fs))
+                string b = AppDomain.CurrentDomain.BaseDirectory;
+                foreach (var dir in new[] { b, $"{b}..\\..\\", $"{b}..\\..\\..\\", Environment.CurrentDirectory })
                 {
-                    img = new Bitmap(temp);
-                }
-
-                if (bgPicture != null)
-                {
-                    bgPicture.Image = img;
-                }
-                else
-                {
-                    BackgroundImage = img;
-                    BackgroundImageLayout = ImageLayout.Stretch;
+                    string p = Path.GetFullPath(Path.Combine(dir, "tp244-bg1-01.jpg"));
+                    if (!File.Exists(p)) continue;
+                    Image img;
+                    using (var fs = File.OpenRead(p)) using (var t = Image.FromStream(fs)) img = new System.Drawing.Bitmap(t);
+                    if (bgPicture != null) bgPicture.Image = img;
+                    return;
                 }
             }
-            catch
-            {
-                // If download fails, keep the default background.
-            }
+            catch { }
         }
 
-        private string ResolveLocalBackgroundPath(string fileName)
+        // ── Click handlers ────────────────────────────────────────────────────
+        private void btnStudents_Click(object sender, EventArgs e)    => new StudentsForm().Show();
+        private void btnCourses_Click(object sender, EventArgs e)     => new CoursesForm().Show();
+        private void btnDepartments_Click(object sender, EventArgs e) => new DepartmentsForm().Show();
+        private void btnModules_Click(object sender, EventArgs e)     => new ModulesForm().Show();
+        private void btnLecturers_Click(object sender, EventArgs e)   => new LecturersForm().Show();
+
+        private void btnNavDashboard_Click(object sender, EventArgs e)   => SetActiveNav(btnNavDashboard);
+        private void btnNavStudents_Click(object sender, EventArgs e)    { SetActiveNav(btnNavStudents);    new StudentsForm().Show(); }
+        private void btnNavCourses_Click(object sender, EventArgs e)     { SetActiveNav(btnNavCourses);     new CoursesForm().Show(); }
+        private void btnNavDepartments_Click(object sender, EventArgs e) { SetActiveNav(btnNavDepartments); new DepartmentsForm().Show(); }
+        private void btnNavModules_Click(object sender, EventArgs e)     { SetActiveNav(btnNavModules);     new ModulesForm().Show(); }
+        private void btnNavLecturers_Click(object sender, EventArgs e)   { SetActiveNav(btnNavLecturers);   new LecturersForm().Show(); }
+
+        private void btnLogout_Click(object sender, EventArgs e)
         {
-            try
+            if (MessageBox.Show("Are you sure you want to sign out?", "Sign Out",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-                string candidate0 = Path.GetFullPath(Path.Combine(baseDir, fileName));
-                if (File.Exists(candidate0)) return candidate0;
-
-                string candidate1 = Path.GetFullPath(Path.Combine(baseDir, "..", "..", fileName));
-                if (File.Exists(candidate1)) return candidate1;
-
-                string candidate2 = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", fileName));
-                if (File.Exists(candidate2)) return candidate2;
-
-                string candidate3 = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, fileName));
-                if (File.Exists(candidate3)) return candidate3;
+                Hide();
+                var login = new LoginForm();
+                login.FormClosed += (s, args) => Application.Exit();
+                login.Show();
             }
-            catch
-            {
-                // Ignore path resolution errors
-            }
-
-            return null;
         }
 
         private class CardSpec
@@ -357,68 +244,8 @@ namespace CollegeLMS
             public string Icon { get; }
             public string Title { get; }
             public string Subtitle { get; }
-
             public CardSpec(string icon, string title, string subtitle)
-            {
-                Icon = icon;
-                Title = title;
-                Subtitle = subtitle;
-            }
-        }
-
-        private void btnStudents_Click(object sender, EventArgs e)
-        {
-            new StudentsForm().Show();
-        }
-
-        private void btnCourses_Click(object sender, EventArgs e)
-        {
-            new CoursesForm().Show();
-        }
-
-        private void btnDepartments_Click(object sender, EventArgs e)
-        {
-            new DepartmentsForm().Show();
-        }
-
-        private void btnModules_Click(object sender, EventArgs e)
-        {
-            new ModulesForm().Show();
-        }
-
-        private void btnLecturers_Click(object sender, EventArgs e)
-        {
-            new LecturersForm().Show();
-        }
-
-        private void btnNavDashboard_Click(object sender, EventArgs e)
-        {
-            // Already on Dashboard
-        }
-
-        private void btnNavStudents_Click(object sender, EventArgs e)
-        {
-            new StudentsForm().Show();
-        }
-
-        private void btnNavCourses_Click(object sender, EventArgs e)
-        {
-            new CoursesForm().Show();
-        }
-
-        private void btnNavDepartments_Click(object sender, EventArgs e)
-        {
-            new DepartmentsForm().Show();
-        }
-
-        private void btnNavModules_Click(object sender, EventArgs e)
-        {
-            new ModulesForm().Show();
-        }
-
-        private void btnNavLecturers_Click(object sender, EventArgs e)
-        {
-            new LecturersForm().Show();
+            { Icon = icon; Title = title; Subtitle = subtitle; }
         }
     }
 }

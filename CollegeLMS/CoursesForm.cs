@@ -15,7 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -61,32 +61,19 @@ namespace CollegeLMS
         private void EnhanceUI()
         {
             ApplyIconText();
-            UiTheme.ApplyHeader(lblTitle, lblSubTitle);
+            UiTheme.ApplyHeader(pnlTitle, lblTitle, lblSubTitle);
 
-            UiTheme.ApplyNavButton(btnNavDashboard);
-            UiTheme.ApplyNavButton(btnNavStudents);
-            UiTheme.ApplyNavButton(btnNavCourses);
-            UiTheme.ApplyNavButton(btnNavDepartments);
-            UiTheme.ApplyNavButton(btnNavModules);
-            UiTheme.ApplyNavButton(btnNavLecturers);
+            if (pnlTitle  != null) pnlTitle.Paint  += (s, e) => UiTheme.PaintHeaderPanel(pnlTitle, e);
+            if (pnlNav    != null) pnlNav.Paint    += (s, e) => UiTheme.PaintNavPanel(pnlNav, e, activeNavButton);
+            if (pnlFooter != null) pnlFooter.Paint += (s, e) => UiTheme.PaintFooterPanel(pnlFooter, e);
 
-            UiTheme.ApplyActionButton(btnAdd);
-            UiTheme.ApplyActionButton(btnUpdate);
-            UiTheme.ApplyActionButton(btnDelete);
-            UiTheme.ApplyActionButton(btnClear);
-            UiTheme.ApplyActionButton(btnBack);
+            UiTheme.ApplyNavStyle(btnNavDashboard, btnNavStudents, btnNavCourses, btnNavDepartments, btnNavModules, btnNavLecturers);
 
-            ApplyButtonHover(btnAdd);
-            ApplyButtonHover(btnUpdate);
-            ApplyButtonHover(btnDelete);
-            ApplyButtonHover(btnClear);
-            ApplyButtonHover(btnBack);
-
-            WireButtonLift(btnAdd);
-            WireButtonLift(btnUpdate);
-            WireButtonLift(btnDelete);
-            WireButtonLift(btnClear);
-            WireButtonLift(btnBack);
+            UiTheme.ApplySuccessButton(btnAdd);
+            UiTheme.ApplyCyanButton(btnUpdate);
+            UiTheme.ApplyDangerButton(btnDelete);
+            UiTheme.ApplyNeutralButton(btnClear);
+            UiTheme.ApplyPrimaryButton(btnBack);
 
             ApplyNavHover(btnNavDashboard);
             ApplyNavHover(btnNavStudents);
@@ -99,17 +86,16 @@ namespace CollegeLMS
             CenterHeader();
             CenterNavButtons();
             ApplyRoundedAll();
-            if (pnlNav != null) pnlNav.Paint += NavBar_Paint;
             PolishStatusBar();
 
-            if (lblFooterText != null) 
+            if (lblFooterText != null)
                 lblFooterText.Text = "© 2026 Nicolette Mashaba  •  Created with ❤️ by Nicolette Mashaba";
         }
 
         private void CenterHeader()
         {
             if (pnlTitle == null || lblTitle == null || lblSubTitle == null) return;
-            UiTheme.ApplyHeader(lblTitle, lblSubTitle);
+            UiTheme.ApplyHeader(pnlTitle, lblTitle, lblSubTitle);
             lblTitle.Left = (pnlTitle.Width - lblTitle.Width) / 2;
             lblSubTitle.Left = (pnlTitle.Width - lblSubTitle.Width) / 2;
             lblTitle.Top = 10;

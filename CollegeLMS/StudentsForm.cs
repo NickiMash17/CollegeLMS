@@ -1,28 +1,14 @@
 // ============================================================
-// COPYRIGHT NOTICE
-// ============================================================
 // Project:     College Learner Management System (CollegeLMS)
-// Author:      Nicolette Mashaba
-// Student No:  20232990
-// Module:      KM-03: Database Manipulation and C#
-// Institution: CTU Training Solutions
-// Date:        12 February 2026
-//
-// ? 2026 Nicolette Mashaba. All rights reserved.
-// This code is the intellectual property of Nicolette Mashaba.
-// Unauthorized copying, sharing, reuse, or redistribution of
-// this code, in whole or in part, is strictly prohibited
-// without prior written permission from the author.
-//
-// For academic inquiries contact: github.com/NickiMash17
+// Author:      Nicolette Mashaba  |  Student No: 20232990
+// © 2026 Nicolette Mashaba. All rights reserved.
 // ============================================================
 
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Drawing.Printing;
 using System.IO;
 using System.Windows.Forms;
@@ -32,784 +18,373 @@ namespace CollegeLMS
     public partial class StudentsForm : Form
     {
         DataTable currentTable = new DataTable();
-        private bool navOffsetApplied = false;
-        private readonly Dictionary<Button, Point> buttonPositions = new Dictionary<Button, Point>();
-        private readonly List<Button> shadowButtons = new List<Button>();
         private Button activeNavButton;
 
         public StudentsForm()
         {
             InitializeComponent();
             UiTheme.ApplyFormDefaults(this);
-            this.DoubleBuffered = true;
-            this.Resize += StudentsForm_Resize;
-            this.Paint += StudentsForm_Paint;
-
-            UiTheme.WireCommonShortcuts(
-                this,
+            UiTheme.InitializeLayout(this, pnlTitle, pnlNav, pnlStatus);
+            DoubleBuffered = true;
+            UiTheme.WireCommonShortcuts(this,
                 findSearchBox: () => txtSearch,
                 triggerSearch: () => btnView_Click(this, EventArgs.Empty));
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            ApplyNavOffset();
             LoadStudents();
             SetupDataGridView();
             UpdateStudentCount();
-            statusLabel.Text = "✅ Connected to CTUCollegeDB";
             EnhanceUI();
-        }
-
-        private void StudentsForm_Resize(object sender, EventArgs e)
-        {
-            CenterHeader();
-            CenterNavButtons();
-            ApplyRoundedAll();
         }
 
         private void EnhanceUI()
         {
-            ApplyIconText();
-            UiTheme.ApplyHeader(lblTitle, lblSubTitle);
+            // Panel painters
+            if (pnlTitle  != null) pnlTitle.Paint  += (s, e) => UiTheme.PaintHeaderPanel(pnlTitle, e);
+            if (pnlNav    != null) pnlNav.Paint    += (s, e) => UiTheme.PaintNavPanel(pnlNav, e, activeNavButton);
+            if (pnlLeft   != null) pnlLeft.Paint   += (s, e) => UiTheme.PaintLeftPanel(pnlLeft, e);
+            if (pnlStatus != null) pnlStatus.Paint += (s, e) => UiTheme.PaintFooterPanel(pnlStatus, e);
+            if (pnlFooter != null) pnlFooter.Paint += (s, e) => UiTheme.PaintFooterPanel(pnlFooter, e);
 
-            UiTheme.ApplyNavButton(btnNavDashboard);
-            UiTheme.ApplyNavButton(btnNavStudents);
-            UiTheme.ApplyNavButton(btnNavCourses);
-            UiTheme.ApplyNavButton(btnNavDepartments);
-            UiTheme.ApplyNavButton(btnNavModules);
-            UiTheme.ApplyNavButton(btnNavLecturers);
-
-            UiTheme.ApplyActionButton(btnView);
-            UiTheme.ApplyActionButton(btnAdd);
-            UiTheme.ApplyActionButton(btnUpdate);
-            UiTheme.ApplyActionButton(btnDelete);
-            UiTheme.ApplyActionButton(btnClear);
-            UiTheme.ApplyActionButton(btnExport);
-            UiTheme.ApplyActionButton(btnPrint);
-            UiTheme.ApplyActionButton(btnSearch);
-
-            ApplyButtonHover(btnView);
-            ApplyButtonHover(btnAdd);
-            ApplyButtonHover(btnUpdate);
-            ApplyButtonHover(btnDelete);
-            ApplyButtonHover(btnClear);
-            ApplyButtonHover(btnExport);
-            ApplyButtonHover(btnPrint);
-            ApplyButtonHover(btnSearch);
-
-            WireButtonLift(btnView);
-            WireButtonLift(btnAdd);
-            WireButtonLift(btnUpdate);
-            WireButtonLift(btnDelete);
-            WireButtonLift(btnClear);
-            WireButtonLift(btnExport);
-            WireButtonLift(btnPrint);
-            WireButtonLift(btnSearch);
-
-            ApplyNavHover(btnNavDashboard);
-            ApplyNavHover(btnNavStudents);
-            ApplyNavHover(btnNavCourses);
-            ApplyNavHover(btnNavDepartments);
-            ApplyNavHover(btnNavModules);
-            ApplyNavHover(btnNavLecturers);
+            // Nav
+            UiTheme.ApplyNavStyle(btnNavDashboard, btnNavStudents, btnNavCourses,
+                                  btnNavDepartments, btnNavModules, btnNavLecturers);
             SetActiveNav(btnNavStudents);
 
-            CenterHeader();
-            CenterNavButtons();
-            ApplyRoundedAll();
-            if (pnlNav != null) pnlNav.Paint += NavBar_Paint;
-            PolishStatusBar();
+            // ── Buttons — ORIGINAL vivid colours ──────────────────────────────
+            UiTheme.ApplyPrimaryButton(btnView);    // Blue
+            UiTheme.ApplyPrimaryButton(btnSearch);  // Blue
+            UiTheme.ApplySuccessButton(btnAdd);     // Green
+            UiTheme.ApplyCyanButton(btnUpdate);     // Teal
+            UiTheme.ApplyDangerButton(btnDelete);   // Red
+            UiTheme.ApplyNeutralButton(btnClear);   // Slate
+            UiTheme.ApplyAmberButton(btnExport);    // Orange  (was Teal; keeping vivid)
+            UiTheme.ApplyPurpleButton(btnPrint);    // Dark slate purple
 
-            if (lblFooterText != null) 
-                lblFooterText.Text = "© 2026 Nicolette Mashaba  •  Created with ❤️ by Nicolette Mashaba";
-        }
+            // Button labels
+            if (lblTitle  != null) lblTitle.Text  = "Student Management";
+            if (btnView   != null) btnView.Text   = "View";
+            if (btnAdd    != null) btnAdd.Text    = "Add";
+            if (btnUpdate != null) btnUpdate.Text = "Update";
+            if (btnDelete != null) btnDelete.Text = "Delete";
+            if (btnClear  != null) btnClear.Text  = "Clear";
+            if (btnExport != null) btnExport.Text = "Export";
+            if (btnPrint  != null) btnPrint.Text  = "Print";
+            if (btnSearch != null) btnSearch.Text = "Search";
+            if (lblSearch != null) lblSearch.Text = "Search:";
+            if (lblCount  != null) lblCount.Text  = "Total Students: 0";
 
-        private void CenterHeader()
-        {
-            if (pnlTitle == null || lblTitle == null || lblSubTitle == null) return;
-            UiTheme.ApplyHeader(lblTitle, lblSubTitle);
-            lblTitle.Left = (pnlTitle.Width - lblTitle.Width) / 2;
-            lblSubTitle.Left = (pnlTitle.Width - lblSubTitle.Width) / 2;
-            lblTitle.Top = 10;
-            lblSubTitle.Top = lblTitle.Bottom + 4;
-        }
+            // Inputs
+            UiTheme.ApplyModernInput(txtStudentID);
+            UiTheme.ApplyModernInput(txtFirstName);
+            UiTheme.ApplyModernInput(txtLastName);
+            UiTheme.ApplyModernInput(txtAge);
+            UiTheme.ApplyModernInput(txtCourseID);
+            UiTheme.ApplyModernInput(txtSearch);
 
-        private void CenterNavButtons()
-        {
-            if (pnlNav == null) return;
-            int gap = 10;
-            Button[] navButtons = new[]
-            {
-                btnNavDashboard, btnNavStudents, btnNavCourses,
-                btnNavDepartments, btnNavModules, btnNavLecturers
-            };
-            int totalWidth = -gap;
-            foreach (Button b in navButtons)
-            {
-                if (b == null) continue;
-                totalWidth += b.Width + gap;
-            }
-            int startX = Math.Max(10, (pnlNav.Width - totalWidth) / 2);
-            int y = (pnlNav.Height - navButtons[0].Height) / 2;
-            int x = startX;
-            foreach (Button b in navButtons)
-            {
-                if (b == null) continue;
-                b.Location = new Point(x, y);
-                x += b.Width + gap;
-            }
-        }
+            // Badge
+            UiTheme.ApplyBadgeStyle(lblCount);
 
-        private void ApplyButtonHover(Button btn)
-        {
-            if (btn == null) return;
-            btn.FlatAppearance.MouseOverBackColor = ControlPaint.Light(btn.BackColor, 0.15f);
-            btn.FlatAppearance.MouseDownBackColor = ControlPaint.Dark(btn.BackColor, 0.10f);
-        }
+            // Header
+            UiTheme.ApplyHeader(pnlTitle, lblTitle, lblSubTitle);
+            UiTheme.ApplyStatusLabel(statusLabel);
 
-        private void ApplyNavHover(Button btn)
-        {
-            if (btn == null) return;
-            btn.FlatAppearance.MouseOverBackColor = ControlPaint.Light(btn.BackColor, 0.12f);
-            btn.FlatAppearance.MouseDownBackColor = ControlPaint.Dark(btn.BackColor, 0.12f);
+            // Footer
+            if (lblFooterText != null)
+                lblFooterText.Text = "\u00A9 2026 Nicolette Mashaba  \u2022  CTU Training Solutions";
         }
 
         private void SetActiveNav(Button btn)
         {
-            if (btn == null) return;
-            btn.BackColor = Color.FromArgb(31, 84, 147);
             activeNavButton = btn;
+            if (btn != null)
+            {
+                btn.ForeColor = Color.White;
+                btn.Font      = new Font("Segoe UI Semibold", 9.5F, FontStyle.Bold);
+            }
             pnlNav?.Invalidate();
         }
 
-        private void NavBar_Paint(object sender, PaintEventArgs e)
-        {
-            if (activeNavButton == null) return;
-            Rectangle r = activeNavButton.Bounds;
-            using (SolidBrush brush = new SolidBrush(Color.White))
-            {
-                e.Graphics.FillRectangle(brush, r.Left, r.Bottom - 3, r.Width, 3);
-            }
-        }
-
-        private void ApplyRoundedAll()
-        {
-            ApplyRounded(btnView, 10);
-            ApplyRounded(btnAdd, 10);
-            ApplyRounded(btnUpdate, 10);
-            ApplyRounded(btnDelete, 10);
-            ApplyRounded(btnClear, 10);
-            ApplyRounded(btnExport, 10);
-            ApplyRounded(btnPrint, 10);
-            ApplyRounded(btnSearch, 10);
-        }
-
-        private void ApplyRounded(Button btn, int radius)
-        {
-            if (btn == null) return;
-            Rectangle bounds = new Rectangle(0, 0, btn.Width, btn.Height);
-            using (GraphicsPath path = new GraphicsPath())
-            {
-                int r = radius * 2;
-                path.AddArc(bounds.X, bounds.Y, r, r, 180, 90);
-                path.AddArc(bounds.Right - r, bounds.Y, r, r, 270, 90);
-                path.AddArc(bounds.Right - r, bounds.Bottom - r, r, r, 0, 90);
-                path.AddArc(bounds.X, bounds.Bottom - r, r, r, 90, 90);
-                path.CloseAllFigures();
-                btn.Region = new Region(path);
-            }
-        }
-
-        private void WireButtonLift(Button btn)
-        {
-            if (btn == null) return;
-            if (!buttonPositions.ContainsKey(btn))
-            {
-                buttonPositions[btn] = btn.Location;
-                shadowButtons.Add(btn);
-            }
-            btn.MouseEnter += (s, e) =>
-            {
-                Button b = (Button)s;
-                b.Location = new Point(buttonPositions[b].X, buttonPositions[b].Y - 2);
-                Invalidate();
-            };
-            btn.MouseLeave += (s, e) =>
-            {
-                Button b = (Button)s;
-                b.Location = buttonPositions[b];
-                Invalidate();
-            };
-        }
-
-        private void StudentsForm_Paint(object sender, PaintEventArgs e)
-        {
-            foreach (Button b in shadowButtons)
-            {
-                DrawShadow(e.Graphics, b);
-            }
-        }
-
-        private void DrawShadow(Graphics g, Control c)
-        {
-            if (c == null) return;
-            int shadowOffset = 3;
-            using (SolidBrush shadowBrush = new SolidBrush(Color.FromArgb(25, 0, 0, 0)))
-            {
-                Rectangle r = new Rectangle(c.Left + shadowOffset, c.Top + shadowOffset, c.Width, c.Height);
-                g.FillRectangle(shadowBrush, r);
-            }
-        }
-
-        private void ApplyNavOffset()
-        {
-            if (navOffsetApplied) return;
-            int navHeight = pnlNav.Height + 10;
-            foreach (Control control in Controls)
-            {
-                if (control == pnlTitle || control == pnlNav || control == pnlStatus) continue;
-                control.Top += navHeight;
-            }
-
-            int bottomLimit = pnlStatus.Top;
-            if (pnlLeft.Bottom > bottomLimit)
-            {
-                pnlLeft.Height = Math.Max(100, bottomLimit - pnlLeft.Top - 10);
-            }
-            if (dataGridView1.Bottom > bottomLimit)
-            {
-                dataGridView1.Height = Math.Max(100, bottomLimit - dataGridView1.Top - 10);
-            }
-            navOffsetApplied = true;
-        }
-
-        // =====================
-        // SETUP DATAGRIDVIEW
-        // =====================
         private void SetupDataGridView()
         {
             UiTheme.ApplyGridDefaults(dataGridView1);
             UiTheme.WireGridRowHover(dataGridView1);
         }
 
-        // =====================
-        // LOAD STUDENTS
-        // =====================
+        private void SetStatus(string message)
+        {
+            if (statusLabel != null) statusLabel.Text = message;
+        }
+
         private void LoadStudents()
         {
             try
             {
-                using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
+                using (var conn = new SqlConnection(AppSettings.ConnectionString))
                 {
                     conn.Open();
-                    string query = "SELECT StudentID, FirstName, LastName, Age, CourseID FROM Student ORDER BY StudentID";
-                    SqlDataAdapter adapter = new SqlDataAdapter(query, conn);
+                    var adapter  = new SqlDataAdapter(
+                        "SELECT StudentID, FirstName, LastName, Age, CourseID FROM Student ORDER BY StudentID", conn);
                     currentTable = new DataTable();
                     adapter.Fill(currentTable);
                     dataGridView1.DataSource = currentTable;
                     UpdateStudentCount();
-                    statusLabel.Text = "✅ " + currentTable.Rows.Count + " students loaded successfully";
+                    SetStatus(currentTable.Rows.Count + " students loaded successfully");
                 }
             }
             catch (Exception ex)
             {
-                statusLabel.Text = "❌ Connection Error: " + ex.Message;
+                SetStatus("Connection error: " + ex.Message);
                 MessageBox.Show("Database connection failed!\n\n" + ex.Message, "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        // =====================
-        // UPDATE STUDENT COUNT
-        // =====================
         private void UpdateStudentCount()
         {
-            lblCount.Text = "👥 Total Students: " + currentTable.Rows.Count;
+            if (lblCount != null) lblCount.Text = "Total Students: " + currentTable.Rows.Count;
         }
 
-        // =====================
-        // CELL CLICK
-        // =====================
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
             {
-                DataGridViewRow row = dataGridView1.Rows[e.RowIndex];
+                var row = dataGridView1.Rows[e.RowIndex];
                 txtStudentID.Text = row.Cells["StudentID"].Value.ToString();
                 txtFirstName.Text = row.Cells["FirstName"].Value.ToString();
-                txtLastName.Text = row.Cells["LastName"].Value.ToString();
-                txtAge.Text = row.Cells["Age"].Value.ToString();
-                txtCourseID.Text = row.Cells["CourseID"].Value.ToString();
-                statusLabel.Text = "📋 Selected: " + txtFirstName.Text + " " + txtLastName.Text
-                                  + "  |  Course: " + txtCourseID.Text
-                                  + "  |  Age: " + txtAge.Text;
+                txtLastName.Text  = row.Cells["LastName"].Value.ToString();
+                txtAge.Text       = row.Cells["Age"].Value.ToString();
+                txtCourseID.Text  = row.Cells["CourseID"].Value.ToString();
+                SetStatus("Selected: " + txtFirstName.Text + " " + txtLastName.Text
+                          + "  |  Course: " + txtCourseID.Text + "  |  Age: " + txtAge.Text);
             }
         }
 
-        // =====================
-        // SEARCH
-        // =====================
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            string searchText = txtSearch.Text.Trim();
-            if (searchText == "")
-            {
-                LoadStudents();
-                return;
-            }
-
+            string s = txtSearch.Text.Trim();
+            if (s == "") { LoadStudents(); return; }
             try
             {
-                using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
+                using (var conn = new SqlConnection(AppSettings.ConnectionString))
                 {
                     conn.Open();
-                    string query = @"SELECT StudentID, FirstName, LastName, Age, CourseID
-                                     FROM Student
-                                     WHERE FirstName LIKE @s OR LastName LIKE @s
-                                        OR CourseID LIKE @s OR CAST(StudentID AS VARCHAR) LIKE @s
-                                     ORDER BY StudentID";
-                    SqlDataAdapter adapter = new SqlDataAdapter(query, conn);
-                    adapter.SelectCommand.Parameters.AddWithValue("@s", "%" + searchText + "%");
+                    var adapter = new SqlDataAdapter(
+                        @"SELECT StudentID, FirstName, LastName, Age, CourseID FROM Student
+                          WHERE FirstName LIKE @s OR LastName LIKE @s
+                             OR CourseID LIKE @s OR CAST(StudentID AS VARCHAR) LIKE @s
+                          ORDER BY StudentID", conn);
+                    adapter.SelectCommand.Parameters.AddWithValue("@s", "%" + s + "%");
                     currentTable = new DataTable();
                     adapter.Fill(currentTable);
                     dataGridView1.DataSource = currentTable;
                     UpdateStudentCount();
-                    statusLabel.Text = "🔍 Found " + currentTable.Rows.Count + " result(s) for: \"" + searchText + "\"";
+                    SetStatus("Found " + currentTable.Rows.Count + " result(s) for: \"" + s + "\"");
                 }
             }
-            catch (Exception ex)
-            {
-                statusLabel.Text = "❌ Search Error: " + ex.Message;
-            }
+            catch (Exception ex) { SetStatus("Search error: " + ex.Message); }
         }
 
-        // =====================
-        // VIEW
-        // =====================
         private void btnView_Click(object sender, EventArgs e)
         {
             LoadStudents();
             txtSearch.Text = "";
-            statusLabel.Text = "🔄 Table refreshed";
+            SetStatus("Table refreshed");
         }
 
-        // =====================
-        // ADD
-        // =====================
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            string firstName = txtFirstName.Text.Trim();
-            string lastName = txtLastName.Text.Trim();
-            string courseId = txtCourseID.Text.Trim();
-            string ageText = txtAge.Text.Trim();
-
-            if (firstName == "" || lastName == "")
-            {
-                MessageBox.Show("Please fill in First Name and Last Name!", "Validation Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (courseId == "")
-            {
-                MessageBox.Show("Please enter Course ID!", "Validation Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (!int.TryParse(ageText, out int age) || age < 1 || age > 120)
-            {
-                MessageBox.Show("Please enter a valid Age (1 - 120).", "Validation Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+            if (txtFirstName.Text.Trim() == "" || txtLastName.Text.Trim() == "")
+            { MessageBox.Show("Please fill in First Name and Last Name!", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
+            if (txtCourseID.Text.Trim() == "")
+            { MessageBox.Show("Please enter Course ID!", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
+            if (!int.TryParse(txtAge.Text.Trim(), out int age) || age < 1 || age > 120)
+            { MessageBox.Show("Please enter a valid Age (1-120).", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
 
             try
             {
-                using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
+                using (var conn = new SqlConnection(AppSettings.ConnectionString))
                 {
                     conn.Open();
-                    string query = "INSERT INTO Student (FirstName, LastName, Age, CourseID) VALUES (@FirstName, @LastName, @Age, @CourseID)";
-                    SqlCommand cmd = new SqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@FirstName", firstName);
-                    cmd.Parameters.AddWithValue("@LastName", lastName);
-                    cmd.Parameters.AddWithValue("@Age", age);
-                    cmd.Parameters.AddWithValue("@CourseID", courseId);
+                    var cmd = new SqlCommand(
+                        "INSERT INTO Student (FirstName, LastName, Age, CourseID) VALUES (@F,@L,@A,@C)", conn);
+                    cmd.Parameters.AddWithValue("@F", txtFirstName.Text.Trim());
+                    cmd.Parameters.AddWithValue("@L", txtLastName.Text.Trim());
+                    cmd.Parameters.AddWithValue("@A", age);
+                    cmd.Parameters.AddWithValue("@C", txtCourseID.Text.Trim());
                     cmd.ExecuteNonQuery();
-                    statusLabel.Text = "✅ Added: " + txtFirstName.Text + " " + txtLastName.Text;
-                    MessageBox.Show("Student added successfully!\n\n" +
-                        "Name: " + txtFirstName.Text + " " + txtLastName.Text + "\n" +
-                        "Course: " + txtCourseID.Text,
-                        "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    LoadStudents();
-                    ClearFields();
+                    SetStatus("Added: " + txtFirstName.Text + " " + txtLastName.Text);
+                    MessageBox.Show("Student added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadStudents(); ClearFields();
                 }
             }
-            catch (Exception ex)
-            {
-                statusLabel.Text = "❌ Error: " + ex.Message;
-                MessageBox.Show("Error adding student:\n" + ex.Message, "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            catch (Exception ex) { SetStatus("Error: " + ex.Message); MessageBox.Show("Error:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
 
-        // =====================
-        // UPDATE
-        // =====================
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            string studentIdText = txtStudentID.Text.Trim();
-            string firstName = txtFirstName.Text.Trim();
-            string lastName = txtLastName.Text.Trim();
-            string courseId = txtCourseID.Text.Trim();
-            string ageText = txtAge.Text.Trim();
+            if (!int.TryParse(txtStudentID.Text.Trim(), out int id))
+            { MessageBox.Show("Please select a student from the table first!", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
+            if (txtFirstName.Text.Trim() == "" || txtLastName.Text.Trim() == "" || txtCourseID.Text.Trim() == "")
+            { MessageBox.Show("Please fill in all fields!", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
+            if (!int.TryParse(txtAge.Text.Trim(), out int age) || age < 1 || age > 120)
+            { MessageBox.Show("Please enter a valid Age (1-120).", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
 
-            if (studentIdText == "")
-            {
-                MessageBox.Show("Please select a student from the table first!", "Validation Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (!int.TryParse(studentIdText, out int studentId))
-            {
-                MessageBox.Show("Invalid Student ID selected.", "Validation Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (firstName == "" || lastName == "")
-            {
-                MessageBox.Show("Please fill in First Name and Last Name!", "Validation Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (courseId == "")
-            {
-                MessageBox.Show("Please enter Course ID!", "Validation Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (!int.TryParse(ageText, out int age) || age < 1 || age > 120)
-            {
-                MessageBox.Show("Please enter a valid Age (1 - 120).", "Validation Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            DialogResult confirm = MessageBox.Show(
-                "Are you sure you want to update:\n\n" +
-                "Student: " + txtFirstName.Text + " " + txtLastName.Text + "\n" +
-                "ID: " + txtStudentID.Text,
-                "Confirm Update", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-            if (confirm == DialogResult.Yes)
+            if (MessageBox.Show("Update " + txtFirstName.Text + " " + txtLastName.Text + "?",
+                "Confirm Update", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 try
                 {
-                    using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
+                    using (var conn = new SqlConnection(AppSettings.ConnectionString))
                     {
                         conn.Open();
-                        string query = "UPDATE Student SET FirstName=@FirstName, LastName=@LastName, Age=@Age, CourseID=@CourseID WHERE StudentID=@StudentID";
-                        SqlCommand cmd = new SqlCommand(query, conn);
-                        cmd.Parameters.AddWithValue("@StudentID", studentId);
-                        cmd.Parameters.AddWithValue("@FirstName", firstName);
-                        cmd.Parameters.AddWithValue("@LastName", lastName);
-                        cmd.Parameters.AddWithValue("@Age", age);
-                        cmd.Parameters.AddWithValue("@CourseID", courseId);
+                        var cmd = new SqlCommand(
+                            "UPDATE Student SET FirstName=@F,LastName=@L,Age=@A,CourseID=@C WHERE StudentID=@ID", conn);
+                        cmd.Parameters.AddWithValue("@ID", id);
+                        cmd.Parameters.AddWithValue("@F",  txtFirstName.Text.Trim());
+                        cmd.Parameters.AddWithValue("@L",  txtLastName.Text.Trim());
+                        cmd.Parameters.AddWithValue("@A",  age);
+                        cmd.Parameters.AddWithValue("@C",  txtCourseID.Text.Trim());
                         cmd.ExecuteNonQuery();
-                        statusLabel.Text = "✅ Updated: " + txtFirstName.Text + " " + txtLastName.Text;
-                        MessageBox.Show("Student updated successfully!\n\n" +
-                            "Name: " + txtFirstName.Text + " " + txtLastName.Text,
-                            "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        LoadStudents();
-                        ClearFields();
+                        SetStatus("Updated: " + txtFirstName.Text + " " + txtLastName.Text);
+                        MessageBox.Show("Student updated successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        LoadStudents(); ClearFields();
                     }
                 }
-                catch (Exception ex)
-                {
-                    statusLabel.Text = "❌ Error: " + ex.Message;
-                    MessageBox.Show("Error updating student:\n" + ex.Message, "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                catch (Exception ex) { SetStatus("Error: " + ex.Message); MessageBox.Show("Error:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
             }
         }
 
-        // =====================
-        // DELETE
-        // =====================
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            string studentIdText = txtStudentID.Text.Trim();
+            if (!int.TryParse(txtStudentID.Text.Trim(), out int id))
+            { MessageBox.Show("Please select a student from the table first!", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
 
-            if (studentIdText == "")
-            {
-                MessageBox.Show("Please select a student from the table first!", "Validation Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (!int.TryParse(studentIdText, out int studentId))
-            {
-                MessageBox.Show("Invalid Student ID selected.", "Validation Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            DialogResult confirm = MessageBox.Show(
-                "Are you sure you want to DELETE:\n\n" +
-                "Name: " + txtFirstName.Text + " " + txtLastName.Text + "\n" +
-                "ID: " + txtStudentID.Text + "\n" +
-                "Course: " + txtCourseID.Text + "\n\n" +
-                "This action cannot be undone!",
-                "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-
-            if (confirm == DialogResult.Yes)
+            if (MessageBox.Show("DELETE " + txtFirstName.Text + " " + txtLastName.Text + "?\n\nThis cannot be undone.",
+                "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
                 try
                 {
-                    using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
+                    using (var conn = new SqlConnection(AppSettings.ConnectionString))
                     {
                         conn.Open();
-                        SqlCommand cmd = new SqlCommand("DELETE FROM Student WHERE StudentID=@StudentID", conn);
-                        cmd.Parameters.AddWithValue("@StudentID", studentId);
+                        var cmd = new SqlCommand("DELETE FROM Student WHERE StudentID=@ID", conn);
+                        cmd.Parameters.AddWithValue("@ID", id);
                         cmd.ExecuteNonQuery();
-                        statusLabel.Text = "🗑️ Deleted: " + txtFirstName.Text + " " + txtLastName.Text;
-                        MessageBox.Show("Student deleted successfully!", "Deleted",
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        LoadStudents();
-                        ClearFields();
+                        SetStatus("Deleted: " + txtFirstName.Text + " " + txtLastName.Text);
+                        MessageBox.Show("Student deleted successfully!", "Deleted", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        LoadStudents(); ClearFields();
                     }
                 }
-                catch (Exception ex)
-                {
-                    statusLabel.Text = "❌ Error: " + ex.Message;
-                    MessageBox.Show("Error deleting student:\n" + ex.Message, "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                catch (Exception ex) { SetStatus("Error: " + ex.Message); MessageBox.Show("Error:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
             }
         }
 
-        // =====================
-        // EXPORT TO CSV
-        // =====================
-        private static string EscapeCsv(object value)
+        private static string EscapeCsv(object v)
         {
-            string text = value?.ToString() ?? "";
-            if (text.Contains("\"")) text = text.Replace("\"", "\"\"");
-            if (text.IndexOfAny(new[] { ',', '"', '\r', '\n' }) >= 0) text = "\"" + text + "\"";
-            return text;
+            string t = v?.ToString() ?? "";
+            if (t.Contains("\"")) t = t.Replace("\"", "\"\"");
+            if (t.IndexOfAny(new[] { ',', '"', '\r', '\n' }) >= 0) t = "\"" + t + "\"";
+            return t;
         }
 
         private void btnExport_Click(object sender, EventArgs e)
         {
-            try
+            if (currentTable == null || currentTable.Rows.Count == 0)
+            { MessageBox.Show("No students to export.", "Export", MessageBoxButtons.OK, MessageBoxIcon.Information); return; }
+
+            var dlg = new SaveFileDialog { Filter = "CSV Files (*.csv)|*.csv", FileName = "Students_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") };
+            if (dlg.ShowDialog() == DialogResult.OK)
             {
-                if (currentTable == null || currentTable.Rows.Count == 0)
+                using (var sw = new StreamWriter(dlg.FileName))
                 {
-                    MessageBox.Show("No students to export.", "Export",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
+                    sw.WriteLine("StudentID,FirstName,LastName,Age,CourseID");
+                    foreach (DataRow row in currentTable.Rows)
+                        sw.WriteLine(EscapeCsv(row["StudentID"]) + "," + EscapeCsv(row["FirstName"]) + "," +
+                                     EscapeCsv(row["LastName"]) + "," + EscapeCsv(row["Age"]) + "," + EscapeCsv(row["CourseID"]));
                 }
-
-                SaveFileDialog saveDialog = new SaveFileDialog();
-                saveDialog.Filter = "CSV Files (*.csv)|*.csv";
-                saveDialog.FileName = "Students_" + DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                saveDialog.Title = "Export Students to CSV";
-
-                if (saveDialog.ShowDialog() == DialogResult.OK)
-                {
-                    using (StreamWriter sw = new StreamWriter(saveDialog.FileName))
-                    {
-                        // Write headers
-                        sw.WriteLine("StudentID,FirstName,LastName,Age,CourseID");
-
-                        // Write rows
-                        foreach (DataRow row in currentTable.Rows)
-                        {
-                            sw.WriteLine(
-                                EscapeCsv(row["StudentID"]) + "," +
-                                EscapeCsv(row["FirstName"]) + "," +
-                                EscapeCsv(row["LastName"]) + "," +
-                                EscapeCsv(row["Age"]) + "," +
-                                EscapeCsv(row["CourseID"]));
-                        }
-                    }
-                    statusLabel.Text = "📤 Exported to: " + saveDialog.FileName;
-                    MessageBox.Show("Students exported successfully!\n\nSaved to:\n" + saveDialog.FileName,
-                        "Export Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Export failed:\n" + ex.Message, "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                SetStatus("Exported to: " + dlg.FileName);
+                MessageBox.Show("Exported successfully!\n" + dlg.FileName, "Export", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
-        // =====================
-        // PRINT
-        // =====================
         private void btnPrint_Click(object sender, EventArgs e)
         {
-            try
+            if (currentTable == null || currentTable.Rows.Count == 0)
+            { MessageBox.Show("No students to print.", "Print", MessageBoxButtons.OK, MessageBoxIcon.Information); return; }
+
+            int printRow = 0;
+            var pd = new PrintDocument();
+            pd.PrintPage += (s, ev) =>
             {
-                if (currentTable == null || currentTable.Rows.Count == 0)
+                var g = ev.Graphics;
+                var titleF  = new Font("Segoe UI Semibold", 16, FontStyle.Bold);
+                var hdrF    = new Font("Segoe UI Semibold", 10, FontStyle.Bold);
+                var dataF   = new Font("Segoe UI", 9);
+                int[] cw    = { 80, 120, 120, 50, 80 };
+                string[] hd = { "StudentID", "FirstName", "LastName", "Age", "CourseID" };
+                int y = 50;
+
+                g.DrawString("CTU College — Student List", titleF, new SolidBrush(UiTheme.NavyDeep), 50, y); y += 30;
+                g.DrawString("Printed: " + DateTime.Now.ToString("dd MMM yyyy HH:mm"), dataF, new SolidBrush(UiTheme.TextMuted), 50, y); y += 30;
+                using (var pen = new Pen(UiTheme.SteelBlue)) g.DrawLine(pen, 50, y, 700, y); y += 10;
+
+                int x = 50;
+                for (int i = 0; i < hd.Length; i++)
                 {
-                    MessageBox.Show("No students to print.", "Print",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
+                    g.FillRectangle(new SolidBrush(UiTheme.GridHeaderBg), x, y, cw[i], 28);
+                    g.DrawString(hd[i], hdrF, Brushes.White, x + 4, y + 5);
+                    x += cw[i];
                 }
+                y += 34;
 
-                PrintDocument pd = new PrintDocument();
-                int printRowIndex = 0;
-                pd.PrintPage += (s, ev) =>
+                bool alt = (printRow % 2) == 1;
+                while (printRow < currentTable.Rows.Count && y <= ev.MarginBounds.Bottom - 40)
                 {
-                    Graphics g = ev.Graphics;
-                    Font titleFont = new Font("Arial", 16, FontStyle.Bold);
-                    Font headerFont = new Font("Arial", 10, FontStyle.Bold);
-                    Font dataFont = new Font("Arial", 9);
+                    var row = currentTable.Rows[printRow];
+                    x = 50;
+                    if (alt) g.FillRectangle(new SolidBrush(UiTheme.GridRowOdd), 50, y, 530, 24);
+                    g.DrawString(row["StudentID"].ToString(), dataF, new SolidBrush(UiTheme.TextPrimary), x + 4, y + 4); x += cw[0];
+                    g.DrawString(row["FirstName"].ToString(), dataF, new SolidBrush(UiTheme.TextPrimary), x + 4, y + 4); x += cw[1];
+                    g.DrawString(row["LastName"].ToString(),  dataF, new SolidBrush(UiTheme.TextPrimary), x + 4, y + 4); x += cw[2];
+                    g.DrawString(row["Age"].ToString(),       dataF, new SolidBrush(UiTheme.TextPrimary), x + 4, y + 4); x += cw[3];
+                    g.DrawString(row["CourseID"].ToString(),  dataF, new SolidBrush(UiTheme.TextPrimary), x + 4, y + 4);
+                    y += 24; alt = !alt; printRow++;
+                }
+                using (var pen = new Pen(UiTheme.SteelBlue)) g.DrawLine(pen, 50, y + 5, 700, y + 5);
+                g.DrawString("Total: " + currentTable.Rows.Count, hdrF, new SolidBrush(UiTheme.NavyMid), 50, y + 10);
+                ev.HasMorePages = printRow < currentTable.Rows.Count;
+                if (!ev.HasMorePages) printRow = 0;
+                titleF.Dispose(); hdrF.Dispose(); dataF.Dispose();
+            };
 
-                    int y = 50;
-                    int[] colWidths = { 80, 120, 120, 50, 80 };
-                    string[] headers = { "StudentID", "FirstName", "LastName", "Age", "CourseID" };
-
-                    // Title
-                    g.DrawString("CTU College Student List", titleFont, Brushes.DarkBlue, 50, y);
-                    y += 30;
-                    g.DrawString("Printed: " + DateTime.Now.ToString("dd MMM yyyy HH:mm"), dataFont, Brushes.Gray, 50, y);
-                    y += 30;
-                    g.DrawLine(Pens.SteelBlue, 50, y, 700, y);
-                    y += 10;
-
-                    // Headers
-                    int x = 50;
-                    foreach (string h in headers)
-                    {
-                        g.FillRectangle(new SolidBrush(Color.FromArgb(31, 84, 147)), x, y, colWidths[Array.IndexOf(headers, h)], 25);
-                        g.DrawString(h, headerFont, Brushes.White, x + 3, y + 4);
-                        x += colWidths[Array.IndexOf(headers, h)];
-                    }
-                    y += 30;
-
-                    // Rows
-                    bool alternate = (printRowIndex % 2) == 1;
-                    while (printRowIndex < currentTable.Rows.Count && y <= ev.MarginBounds.Bottom - 40)
-                    {
-                        DataRow row = currentTable.Rows[printRowIndex];
-                        x = 50;
-                        if (alternate)
-                            g.FillRectangle(new SolidBrush(Color.FromArgb(235, 244, 255)), 50, y, 530, 22);
-
-                        g.DrawString(row["StudentID"].ToString(), dataFont, Brushes.Black, x + 3, y + 3); x += colWidths[0];
-                        g.DrawString(row["FirstName"].ToString(), dataFont, Brushes.Black, x + 3, y + 3); x += colWidths[1];
-                        g.DrawString(row["LastName"].ToString(), dataFont, Brushes.Black, x + 3, y + 3); x += colWidths[2];
-                        g.DrawString(row["Age"].ToString(), dataFont, Brushes.Black, x + 3, y + 3); x += colWidths[3];
-                        g.DrawString(row["CourseID"].ToString(), dataFont, Brushes.Black, x + 3, y + 3);
-
-                        y += 22;
-                        alternate = !alternate;
-                        printRowIndex++;
-                    }
-
-                    // Footer
-                    g.DrawLine(Pens.SteelBlue, 50, y + 5, 700, y + 5);
-                    g.DrawString("Total Students: " + currentTable.Rows.Count, headerFont, Brushes.DarkBlue, 50, y + 10);
-
-                    ev.HasMorePages = printRowIndex < currentTable.Rows.Count;
-                    if (!ev.HasMorePages) printRowIndex = 0;
-
-                };
-
-                PrintPreviewDialog preview = new PrintPreviewDialog();
-                preview.Document = pd;
-                preview.Width = 900;
-                preview.Height = 700;
-                preview.ShowDialog();
-                statusLabel.Text = "🖨️ Print preview opened";
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Print failed:\n" + ex.Message, "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            new PrintPreviewDialog { Document = pd, Width = 900, Height = 700 }.ShowDialog();
+            SetStatus("Print preview opened");
         }
 
-        // =====================
-        // CLEAR
-        // =====================
         private void btnClear_Click(object sender, EventArgs e)
         {
             ClearFields();
             txtSearch.Text = "";
-            statusLabel.Text = "🧹 Fields cleared";
-        }
-
-        private void ApplyIconText()
-        {
-            if (lblTitle != null) lblTitle.Text = "🎓  Student App";
-            if (btnView != null) btnView.Text = "👁️ View";
-            if (btnAdd != null) btnAdd.Text = "➕ Add";
-            if (btnUpdate != null) btnUpdate.Text = "✏️ Update";
-            if (btnDelete != null) btnDelete.Text = "🗑️ Delete";
-            if (btnClear != null) btnClear.Text = "🧹 Clear";
-            if (btnExport != null) btnExport.Text = "📤 Export";
-            if (btnPrint != null) btnPrint.Text = "🖨️ Print";
-            if (btnSearch != null) btnSearch.Text = "🔍 Search";
-            if (lblSearch != null) lblSearch.Text = "🔍 Search:";
-            if (lblCount != null) lblCount.Text = "👥 Total Students: 0";
-        }
-
-        private void PolishStatusBar()
-        {
-            UiTheme.ApplyStatusLabel(statusLabel);
+            SetStatus("Fields cleared");
         }
 
         private void ClearFields()
         {
             txtStudentID.Text = "";
             txtFirstName.Text = "";
-            txtLastName.Text = "";
-            txtAge.Text = "";
-            txtCourseID.Text = "";
+            txtLastName.Text  = "";
+            txtAge.Text       = "";
+            txtCourseID.Text  = "";
         }
 
-        private void btnNavDashboard_Click(object sender, EventArgs e)
-        {
-            new Dashboard().Show();
-            this.Close();
-        }
-
-        private void btnNavStudents_Click(object sender, EventArgs e)
-        {
-            // Already on Students
-        }
-
-        private void btnNavCourses_Click(object sender, EventArgs e)
-        {
-            new CoursesForm().Show();
-            this.Close();
-        }
-
-        private void btnNavDepartments_Click(object sender, EventArgs e)
-        {
-            new DepartmentsForm().Show();
-            this.Close();
-        }
-
-        private void btnNavModules_Click(object sender, EventArgs e)
-        {
-            new ModulesForm().Show();
-            this.Close();
-        }
-
-        private void btnNavLecturers_Click(object sender, EventArgs e)
-        {
-            new LecturersForm().Show();
-            this.Close();
-        }
+        private void btnNavDashboard_Click(object sender, EventArgs e)   { new Dashboard().Show(); Close(); }
+        private void btnNavStudents_Click(object sender, EventArgs e)    { /* already here */ }
+        private void btnNavCourses_Click(object sender, EventArgs e)     { new CoursesForm().Show();     Close(); }
+        private void btnNavDepartments_Click(object sender, EventArgs e) { new DepartmentsForm().Show(); Close(); }
+        private void btnNavModules_Click(object sender, EventArgs e)     { new ModulesForm().Show();     Close(); }
+        private void btnNavLecturers_Click(object sender, EventArgs e)   { new LecturersForm().Show();   Close(); }
     }
 }
